@@ -93,7 +93,7 @@ Note that the [summary-data.js](summary-data.js) module includes a ``get()`` and
 
 The API updates the variable ``SUMMARY_DATA`` upon startup so that this data will be available to the public route '/json/summary-data.json'.
 
-Additionally, changes to ``Value`` or ``Array`` types trigger a call to summaryData.get() and summaryData.save() both to update the variable ``SUMMARY_DATA`` and save the calculations to the Datastore. This is performed through the 'updateEntity' POST route.
+Additionally, changes to ``Value`` or ``Array`` types trigger a call to ``summaryData.get()`` and ``summaryData.save()`` both to update the variable ``SUMMARY_DATA`` and save the calculations to the Datastore. This is performed through the 'updateEntity' POST route.
 
 TODO: use Redis instead of the module-level variable ``SUMMARY_DATA``.
 
