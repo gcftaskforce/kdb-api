@@ -22,7 +22,7 @@ All code is linted against [eslint-config-airbnb](https://www.npmjs.com/package/
 
 ### Custom Data Types
 
-The custom data types fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are are summarized below. Please see individual model classes in the API for specifics.
+The custom data types fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are summarized below. Please see individual model classes in the API for specifics.
 
 - **Value** consists of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, null is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in the Datastore). See each corresponding class defined in ./models in the API for insight on derived attributes.
 - **Array** consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
