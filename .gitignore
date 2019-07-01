@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+private/
+PRIVATE/
+public/
+logs/
+npm-debug.log
+.env
+.~lock.*
+.vscode/

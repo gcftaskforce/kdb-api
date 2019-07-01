@@ -1,0 +1,46 @@
+{
+  "name": "gcftaskforce-kdb-api",
+  "version": "2.0.1",
+  "description": "API component for Knowledge Database",
+  "main": "bin/www",
+  "scripts": {
+    "test": "jest --detectOpenHandles --noStackTrace --bail",
+    "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/gcftaskforce/kdb-api.git"
+  },
+  "author": "D Anderson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gcftaskforce/kdb-api/issues"
+  },
+  "homepage": "https://github.com/gcftaskforce/kdb-api#readme",
+  "devDependencies": {
+    "eslint": "6.0.1",
+    "eslint-config-airbnb": "17.1.0",
+    "eslint-plugin-import": "2.18.0",
+    "eslint-plugin-jest": "22.7.1",
+    "eslint-plugin-jsx-a11y": "6.2.3",
+    "eslint-plugin-react": "7.14.2"
+  },
+  "dependencies": {
+    "@google-cloud/datastore": "4.1.3",
+    "@google-cloud/translate": "4.1.1",
+    "chance": "1.0.18",
+    "connect-redis": "3.4.1",
+    "cors": "2.8.5",
+    "debug": "4.1.1",
+    "dotenv": "8.0.0",
+    "express": "4.17.1",
+    "express-session": "1.16.2",
+    "http-errors": "1.7.3",
+    "jest": "24.8.0",
+    "lodash": "4.17.11",
+    "node-fetch": "2.6.0",
+    "redis": "2.8.0",
+    "uniqid": "5.0.3",
+    "validator": "11.0.0"
+  }
+}
