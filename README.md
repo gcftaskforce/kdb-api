@@ -4,7 +4,7 @@
 
 The GCF Task Force Knowledge Database (KDB) consists of three components: (1) a database API; (2) an MVC-style website; and (3) a custom client-based (Webpack/babel compiled) inline content management system (CMS).
 
-The API and website are Node JS (ES 6) Express applications accessed through Apache proxy. PM2 is used to manage the two (API and site) processes. Everything runs on a virtual machine hosted on Google Cloud.
+The API and website are Node JS (ES 6) Express applications proxied through Apache. PM2 is used to manage the two (API and site) processes. Everything runs on a virtual machine hosted on Google Cloud.
 
 Note that all application-related files are stored on a separately requisitioned disk mounted at /data.
 
@@ -22,7 +22,7 @@ The custom data types fulfilling the requirements of the KDB (and reflected in t
 
 - Array: consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
 
-- Text: self explanatory
+- Text: *self explanatory*
 
 - Framework: structured exactly as Text. The datatype was made separate in anticipation of extracting the current textual content into more structured attributes.
 
@@ -47,13 +47,11 @@ The KDB is principally a repository for data at both the nation and jurisdiction
 
 The following environment variables are required:
 
-**PORT HTTP** HTTP port the API is run on
-**SESSION_NAME** name of session used for authenticated users
-**SESSION_SECRET** key (salt) for the session
-**GOOGLE_PROJECT_ID** __self explanatory__
-**GOOGLE_APPLICATION_CREDENTIALS** absolute path to Google-generated JSON file
-
-``
+- **PORT HTTP** HTTP port the API is run on
+- **SESSION_NAME** name of session used for authenticated users
+- **SESSION_SECRET** key (salt) for the session
+- **GOOGLE_PROJECT_ID** *self explanatory*
+- **GOOGLE_APPLICATION_CREDENTIALS** absolute path to Google-generated JSON file
 
 ### API Component Routes
 
