@@ -82,29 +82,6 @@ class Model {
     this.datastore = new Datastore();
   }
 
-  /*
-    copy only the properties specified in ENTITY_DEF
-    for any missing properties use defaults (depending on type)
-  */
-  // copyEntityProperties(srcEntity = {}, params = {}) {
-  //   const entity = {};
-  //   this.ENTITY_PROPERTIES.forEach((propertyDef) => {
-  //     if (propertyDef.isTranslated) {
-  //       LANGS.forEach((lang) => {
-  //         const propertyTranslationName = `${propertyDef.name}-${lang}`;
-  //         entity[propertyTranslationName] = _.has(srcEntity, propertyTranslationName)
-  //           ? srcEntity[propertyTranslationName]
-  //           : getDefaultValue(propertyDef.type, params);
-  //       });
-  //     } else {
-  //       entity[propertyDef.name] = _.has(srcEntity, propertyDef.name)
-  //         ? srcEntity[propertyDef.name]
-  //         : getDefaultValue(propertyDef.type, params);
-  //     }
-  //   });
-  //   return entity;
-  // }
-
   copyTranslatedEntityProperties(srcEntity = {}, context = {}) {
     const entity = {};
     // process non-derived properties first
