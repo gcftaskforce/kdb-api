@@ -68,15 +68,15 @@ The API routes are grouped into public and private. Please see the app for detai
 - The public routes are strictly GET and prefixed by '/json'.
 - The private routes are strictly POST.
 
-## Categorical Data
+### Categorical Data
 
-## Citations
+### Citations
 
-## Summary Data and Derived Values
+### Summary Data and Derived Values
 
-## Translated Content
+### Translated Content
 
-## Basic Directory Structure
+### Basic Directory Structure
 
 - etc/ data files
   - fields/ field definitions (by field type)
@@ -84,4 +84,4 @@ The API routes are grouped into public and private. Please see the app for detai
 - lib/ common support functions
 - models/ classes for interacting with the database (by field type)
 
-## Routing
+### Routing
