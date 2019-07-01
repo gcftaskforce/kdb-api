@@ -1,47 +1,49 @@
 # GCF Task Force Knowledge Database (API Component)
 
-## Project/Application Technical Overview
+## Project Overview
 
 The GCF Task Force Knowledge Database (KDB) consists of three components: (1) a database API; (2) an MVC-style website; and (3) a custom client-based (Webpack/babel compiled) inline content management system (CMS).
 
 The API and website are Node JS (ES 6) Express applications accessed through Apache proxy. PM2 is used to manage the two (API and site) processes. Everything runs on a virtual machine hosted on Google Cloud.
 
-All application-related files are stored on a separately requisitioned disk mounted at /data.
+Note that all application-related files are stored on a separately requisitioned disk mounted at /data.
 
 Google Cloud Datastore serves as the backend database. Note that the API is the only component that interacts directly with the database.
 
 Redis is used to store session state for authentication. Session state is shared between API and website components.
 
-Directory structure is consistent between the two applications. Configuration files are maintained in ./etc. Configurations are read once at startup thus necessitating application restart (through PM2) to incorporate any changes. The files in ./etc specify seldom-changed attributes. These would be for example:
+Directory structure is consistent between the two applications. Configuration files are maintained in ./etc. Configurations are read once at startup thus necessitating application restart (through PM2) to incorporate any changes. The files in ./etc specify seldom-changed attributes.
 
-- a jurisdiction's "Major Vegetation Types"
-- a field's label translations
-- the calculation for deriving forest-carbon-total-percent-GCF
+### Custom Data Types
 
-The custom datatypes fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are are summarized below. Please see individual model classes in the API for specifics.
+The custom data types fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are are summarized below. Please see individual model classes in the API for specifics.
 
-- Value: consits of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, null is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in Datastore). See each corresponding class defined in ./models in the API for insight on derived attribtes.
+- Value: consists of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, null is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in the Datastore). See each corresponding class defined in ./models in the API for insight on derived attributes.
 
-- Array: consits of an array, each element containing an "id" and an "amount" (see "Value" above) attribute.
+- Array: consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
 
-- Text: self expanatory.
+- Text: self explanatory.
 
-- Framework: is structured exactly as Text. The datatype was made separate in anticipation of extracting the current textual content into more structured attributes.
+- Framework: structured exactly as Text. The datatype was made separate in anticipation of extracting the current textual content into more structured attributes.
 
 - Contact: consists of (string) attributes "firstName", "lastName", "email", and "companyTitle"
 
 - Partnership: consists of the text attributes "name", "link", "description", "fundingSource", "fundingAmount", "initiativeType", "initiativeStatus". One attribute, "partners", is stored as text but delimited for possible future use as a list. Finally, the attribute "jurisdictions" maintains a string array of jurisdiction ids. This field is used for display as well as filtering Partnership records to be properly included in either the context of a nation or jurisdiction.
 
+### Multilingual Features
+
 Both the API and website components are multilingual. Specific label translations are maintained under ./etc.
 
-Text translations (text data) are discussed in API Component README.
+Text translations (text data) are discussed in the API Component README.
 
-The KDB is principally a repository for data at both the nation and jurisdictional level. Collectively these are referred to as "regions". Identifiers are referenced in snake case with a dot separator as follows (note the removal of combining diacritical marks).
+The KDB is principally a repository for data at both the nation and jurisdictional level. Collectively these are referred to as "regions". Identifiers are referenced in snake case with a dot separator as follows (note the removal of combining diacritical marks). For example:
 
 - "mexico" identifies the nation of Mexico
-- "brazil.maranhao" identifies the jurisdiction of Maranhão Brazil
+- "brazil.maranhao" identifies the jurisdiction of Maranhão, Brazil
 
-## API Component Routes
+## API
+
+### API Component Routes
 
 The API routes are grouped into public and private. Please see the app for details, but to summarize:
 
@@ -77,26 +79,3 @@ The API routes are grouped into public and private. Please see the app for detai
 http://localhost:3001/json/regionDefs
 http://localhost:3001/json/partnership-brazil.acre-en.json
 
-## Release Notes
-
-### 2.0.0
-
-Version 2 separates routes into:
-
-1. a public "json/" prefixed route
-2. POST route of the with the signature "/:modelName/:methodName/:id/:lang"
-
-Internal refactoring also organizes configuration files into an "etc/" directory and support functions into a "lib." directory.
-
-### 2.0.1
-
-- update dependency @google-cloud/datastore 4.1.0 -> 4.1.1
-
-### 2.0.2
-
-- include "env" info with region-defs
-
-### 2.0.3
-
-- include langs in "env" info
-- fix issue with Ivory Coast definition
