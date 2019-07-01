@@ -24,17 +24,17 @@ All code is linted against [eslint-config-airbnb](https://www.npmjs.com/package/
 
 The custom data types fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are are summarized below. Please see individual model classes in the API for specifics.
 
-- Value: consists of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, null is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in the Datastore). See each corresponding class defined in ./models in the API for insight on derived attributes.
+- **Value** consists of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, null is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in the Datastore). See each corresponding class defined in ./models in the API for insight on derived attributes.
 
-- Array: consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
+- **Array** consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
 
-- Text: *self explanatory*
+- **Text** *self explanatory*
 
-- Framework: structured exactly as Text. The datatype was made separate in anticipation of extracting the current textual content into more structured attributes.
+- **Framework** structured exactly as Text. The datatype was made separate in anticipation of extracting the current textual content into more structured attributes.
 
-- Contact: consists of (string) attributes "firstName", "lastName", "email", and "companyTitle"
+- **Contact** consists of (string) attributes "firstName", "lastName", "email", and "companyTitle"
 
-- Partnership: consists of the text attributes "name", "link", "description", "fundingSource", "fundingAmount", "initiativeType", "initiativeStatus" and "partners". The attribute "jurisdictions" maintains a string array of jurisdiction ids. This field is used for display as well as filtering Partnership records to be properly included in either the context of a nation or jurisdiction.
+- **Partnership** consists of the text attributes "name", "link", "description", "fundingSource", "fundingAmount", "initiativeType", "initiativeStatus" and "partners". The attribute "jurisdictions" maintains a string array of jurisdiction ids. This field is used for display as well as filtering Partnership records to be properly included in either the context of a nation or jurisdiction.
 
 ### Multilingual Features
 
@@ -67,14 +67,6 @@ The API routes are grouped into public and private. Please see the app for detai
 
 - The public routes are strictly GET and prefixed by '/json'.
 - The private routes are strictly POST.
-
-## Server Requirements (Including Development Environments)
-
-- installed and running Redis server
-- .env file specifying the following (example values given):
-  - DEBUG=api:*
-  - DEBUG_DEPTH=10
-  - PORT=3001
 
 ## Categorical Data
 
