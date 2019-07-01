@@ -22,7 +22,7 @@ The custom data types fulfilling the requirements of the KDB (and reflected in t
 
 - Array: consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
 
-- Text: self explanatory.
+- Text: self explanatory
 
 - Framework: structured exactly as Text. The datatype was made separate in anticipation of extracting the current textual content into more structured attributes.
 
@@ -42,6 +42,18 @@ The KDB is principally a repository for data at both the nation and jurisdiction
 - "brazil.maranhao" identifies the jurisdiction of Maranhão, Brazil
 
 ## API
+
+### Environment
+
+The following environment variables are required:
+
+**PORT HTTP** HTTP port the API is run on
+**SESSION_NAME** name of session used for authenticated users
+**SESSION_SECRET** key (salt) for the session
+**GOOGLE_PROJECT_ID** __self explanatory__
+**GOOGLE_APPLICATION_CREDENTIALS** absolute path to Google-generated JSON file
+
+``
 
 ### API Component Routes
 
@@ -75,7 +87,3 @@ The API routes are grouped into public and private. Please see the app for detai
 - models/ classes for interacting with the database (by field type)
 
 ## Routing
-
-http://localhost:3001/json/regionDefs
-http://localhost:3001/json/partnership-brazil.acre-en.json
-
