@@ -24,7 +24,7 @@ All code is linted against [eslint-config-airbnb](https://www.npmjs.com/package/
 
 The custom data types fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are summarized below. Please see individual model classes in the API for specifics.
 
-- **Value** consists of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, null is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in the Datastore). See each corresponding class defined in ./models in the API for insight on derived attributes.
+- **Value** consists of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, *null* is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in the Datastore). See each corresponding class defined in ./models in the API for insight on derived attributes.
 - **Array** consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
 - **Text** *self explanatory*
 - **Framework** structured exactly as Text. The datatype was made separate in anticipation of extracting the current textual content into more structured attributes.
@@ -73,7 +73,29 @@ Citations are not translated.
 
 For convenience, the models use an updateCitation() method available through the POST API.
 
-### Summary Data and Derived Values
+### Derived Values and Summary Data
+
+Please refer to the configuration file [etc/field-defs.js](etc/field-defs.js) and the module [summary-data.js](summary-data.js). Field definitions based on derived values must have an ``isDerived`` property set to ``true`` and a ``get`` property specifying a callback having a single argument (the ``context``).
+
+The calculations are performed in the module [summary-data.js](summary-data.js). The ``context`` is really a closure providing access to all the required "dependent variables" for calculations at the national or jurisdictional level (and they are different!).
+
+Several jurisdictional calculations require access to values from the member nation. These are included in the ``context``.
+
+The ``context`` also includes the global data defined in the configuration file [etc/global-data.js](etc/global-data.js).
+
+Following the calculation of all derived values for all nations/jurisdictions, summary-totals are calculated. These are displayed on the website homepage.
+
+Note that the [summary-data.js](summary-data.js) module includes a ``get()`` and a ``save()`` method.
+
+``get()`` retrieves all the necessary Datastore entities, performs the calculations, and returns an array of results.
+
+``save(summaryData)`` updates all derived values in the Datastore (currently ``Value`` types only).
+
+The API updates the variable ``SUMMARY_DATA`` upon startup so that this data will be available to the public route '/json/summary-data.json'.
+
+Additionally, changes to ``Value`` or ``Array`` types trigger a call to summaryData.get() and summaryData.save() both to update the variable ``SUMMARY_DATA`` and save the calculations to the Datastore. This is performed through the 'updateEntity' POST route.
+
+TODO: use Redis instead of the module-level variable ``SUMMARY_DATA``.
 
 ### Translated Content
 
