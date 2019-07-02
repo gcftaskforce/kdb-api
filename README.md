@@ -89,6 +89,20 @@ The "Partnership" *Kind* does not use this templating system.
 
 #### Categorical Data and Field Overrides
 
+As described above, all data fields are defined in [etc/field-defs.js](etc/field-defs.js).
+
+However, specific field properties may be optionally defined by a member region (national or jurisdictional).
+
+This is commonly the case with categorical data (of the *Array* kind). Categories for the "Forest Management" field, for example, are normally defined by the jurisdiction itself.
+
+These *overrides* are defined by each member region in [etc/regions](etc/regions).
+
+Furthermore, categories for a jurisdictional field are often dictated at the national level, resulting in consistency across all jurisdictions within that nation. To accommodate this scenario, the structure of [etc/regions](etc/regions) allows for a ``jurisdictional-fields.js`` definition file within each "nation" directory.
+
+For example, all jurisdictions in Peru use common "Forest Management" categories. These are defined in [etc/regions/peru/jurisdictional-fields.js](etc/regions/peru/jurisdictional-fields.js).
+
+Individual jurisdictions, San Martín for example, can specify their own field-definition properties [etc/regions/peru/jurisdictions/san_martin/index.js](etc/regions/peru/jurisdictions/san_martin/index.js).
+
 ### Citations
 
 Citation text (HTML) is stored as a single text attribute for each entity of type _Value_, _Array_, _Text_, and _Framework_ (_Partnership_ and _Contact_ kinds are not cited).
