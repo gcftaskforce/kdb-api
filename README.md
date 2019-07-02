@@ -111,7 +111,7 @@ As discussed above, the "Partnership" *Kind* does not use a templating system bu
 
 The "Partnership" *Amazon's Nectar* with the ID "partnership.jsnc3bx0-brazil-jsnc3bx0" has a ``nationID`` of ``"brazil"`` and a ``jurisdictions`` of ``["amapa", "para"]``.
 
-See the [models/Partnership.js](models/Partnership.js) class for insight on how this works.
+See the [models/Partnership.js](models/Partnership.js) class for insight into how this works.
 
 ### Citations
 
@@ -121,7 +121,7 @@ Citations are not translated.
 
 For convenience, the models use an updateCitation() method available through the POST API.
 
-### Derived Values and Summary Data
+### Derived (Calculated) Values and Summary Data
 
 Please refer to the configuration file [etc/field-defs.js](etc/field-defs.js) and the module [summary-data.js](summary-data.js). Field definitions based on derived values must have an ``isDerived`` property set to ``true`` and a ``get`` property specifying a callback function having a single argument (the ``context``).
 
@@ -145,6 +145,15 @@ Additionally, changes to ``Value`` or ``Array`` types trigger a call to ``summar
 
 TODO: use Redis instead of the module-level variable ``SUMMARY_DATA``.
 
+### Derived Entity Properties
+
+*Derived Entity Properties* are defined at the model [models/](models/) level and should not be confused with *Derived Values*.
+
+To recap from the subsection *Derived (Calculated) Values and Summary Data* above, **derived values** are actual stored Datastore entities that must be calculated using other data.
+
+The **derived entity properties** are, on the other hand, *Entity* properties derived from *Entity* properties stored in the Datastore.
+
+For illustration, refer to the ``fullName`` derived property in [models/Contact](models/Contact). Note that a function callback is specified using ``get``. The ``context`` argument of the callback will have access to both the *Entity* value properties as well as the field definition as specified in [/etc/field-defs.js](/etc/field-defs.js).
 
 ### Translated Content
 
