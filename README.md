@@ -103,6 +103,14 @@ For example, all jurisdictions in Peru use common "Forest Management" categories
 
 Individual jurisdictions, San Martín for example, can specify their own field-definition properties [etc/regions/peru/jurisdictions/san_martin/index.js](etc/regions/peru/jurisdictions/san_martin/index.js).
 
+### Partnerships
+
+As discussed above, the "Partnership" *Kind* does not use a templating system built from [etc/field-defs.js](etc/field-defs.js). "Partnerships" can be thought of more as an array.
+
+"Partnerships" also differ from other KDB data in that each partnership *Entity* maintains a ``nationId`` along with a``jurisdictions`` array. Thus, a single "Partnership" can be cross listed within a nation and multiple jurisdictions. For example
+
+The "Partnership" "Amazon's Nectar" with the ID "partnership.jsnc3bx0-brazil-jsnc3bx0" has a ``nationID`` of ``"brazil"`` and a ``jurisdictions`` of ``["amapa", "para"]``.
+
 ### Citations
 
 Citation text (HTML) is stored as a single text attribute for each entity of type _Value_, _Array_, _Text_, and _Framework_ (_Partnership_ and _Contact_ kinds are not cited).
@@ -113,7 +121,7 @@ For convenience, the models use an updateCitation() method available through the
 
 ### Derived Values and Summary Data
 
-Please refer to the configuration file [etc/field-defs.js](etc/field-defs.js) and the module [summary-data.js](summary-data.js). Field definitions based on derived values must have an ``isDerived`` property set to ``true`` and a ``get`` property specifying a callback having a single argument (the ``context``).
+Please refer to the configuration file [etc/field-defs.js](etc/field-defs.js) and the module [summary-data.js](summary-data.js). Field definitions based on derived values must have an ``isDerived`` property set to ``true`` and a ``get`` property specifying a callback function having a single argument (the ``context``).
 
 The calculations are performed in the module [summary-data.js](summary-data.js). The ``context`` is really a closure providing access to all the required "dependent variables" for calculations at the national or jurisdictional level (and they are different!).
 
