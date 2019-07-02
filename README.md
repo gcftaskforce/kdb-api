@@ -109,7 +109,9 @@ As discussed above, the "Partnership" *Kind* does not use a templating system bu
 
 "Partnerships" also differ from other KDB data in that each partnership *Entity* maintains a ``nationId`` along with a``jurisdictions`` array. Thus, a single "Partnership" can be cross listed within a nation and multiple jurisdictions. For example
 
-The "Partnership" "Amazon's Nectar" with the ID "partnership.jsnc3bx0-brazil-jsnc3bx0" has a ``nationID`` of ``"brazil"`` and a ``jurisdictions`` of ``["amapa", "para"]``.
+The "Partnership" *Amazon's Nectar* with the ID "partnership.jsnc3bx0-brazil-jsnc3bx0" has a ``nationID`` of ``"brazil"`` and a ``jurisdictions`` of ``["amapa", "para"]``.
+
+See the [models/Partnership.js](models/Partnership.js) class for insight on how this works.
 
 ### Citations
 
