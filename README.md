@@ -8,7 +8,7 @@ The GCF Task Force Knowledge Database (KDB) consists of three components:
 2. an MVC-style website
 3. a custom client-based (Webpack/babel compiled) content management system (CMS) inline with the website.
 
-Both he API and website are Node JS (ES 6) Express applications proxied through Apache. PM2 is used to manage the two (API and site) processes. Everything runs on a virtual machine hosted on Google Cloud.
+Both the API and website are Node JS (ES 6) Express applications proxied through Apache. PM2 is used to manage the two (API and website) processes. Everything runs on a virtual machine hosted on Google Cloud.
 
 Note that all application-related files are stored on a separately requisitioned disk mounted at /data.
 
@@ -20,9 +20,9 @@ Directory structure is consistent between the two applications. Configuration fi
 
 All code is linted against [eslint-config-airbnb](https://www.npmjs.com/package/eslint-config-airbnb).
 
-### Custom Data Types
+### Custom Data Types (Kinds)
 
-The custom data types fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are summarized below. Please see individual model classes in the API for specifics.
+The custom data types (Kinds) fulfilling the requirements of the KDB (and reflected in the API's models/ directory) are summarized below. Please see individual model classes in the API for specifics.
 
 - **Value** consists of a numeric "amount" attribute as well as "year" and "currency" (string) attributes acting as modifiers. In order to maintain compatibility with JSON as well as Google Cloud Datastore, *null* is used as a missing value. Note that the API returns a formatted "string" attribute, but this is derived (not stored in the Datastore). See each corresponding class defined in ./models in the API for insight on derived attributes.
 - **Array** consists of an array-type property "rows", each row containing an "id" and an "amount" (see "Value" above) attribute.
@@ -37,12 +37,14 @@ Both the API and website components are multilingual. Specific label translation
 
 Text translations (text data) are discussed in the API Component README.
 
-### Data Slugs
+### Region Ids/Slugs
 
-The KDB is principally a repository for data at both the nation and jurisdictional level. Collectively these are referred to as "regions". Identifiers are referenced in snake case with a dot separator as follows (note the removal of combining diacritical marks to form strict ASCII string IDs). For example:
+The KDB is principally a repository for data at both the nation and jurisdictional level. Collectively these are referred to as "regions". Identifiers are referenced in snake case with a dot-separator as follows (note the removal of combining diacritical marks to form strict ASCII string IDs). For example:
 
 - "mexico" identifies the nation of Mexico
 - "brazil.maranhao" identifies the jurisdiction of Maranhão, Brazil
+
+Internally these are referred to as ``regionId``.
 
 ## API
 
@@ -63,11 +65,33 @@ The API routes are grouped into public and private. Please see the app for detai
 - The public routes are strictly GET and prefixed by '/json'.
 - The private routes are strictly POST.
 
-### Categorical Data
+### Google Cloud Datastore Nomenclature and Integration
+
+Please refer to [Datastore overview](https://cloud.google.com/datastore/docs/concepts/overview). Google Cloud Datastore is a schemaless database. It is up to the developer to enforce structure and organization through design using Google Cloud Datastore organizational concepts *Kind*, *Entity*, and *Property*.
+
+An Object stored in Google Cloud Datastore is referred to as *Entity*, with each individual data for the object referred to as *Property*.
+
+Each of the KDB's custom datatypes corresponds to a *Kind*. Furthermore, each *Kind* corresponds to its own model as defined in [models](models/).
+
+Within the KDB, each *Entity* is uniquely identified (keyed) following the convention ``kind-fieldName-regionId`` (``array-forest_management-peru.san_martin`` for example).
+
+### Data Fields and Templates
+
+All KDB *Kinds* (and by extension  [models](models/)) **except** the "Partnership" *Kind* use a data templating system.
+
+All data fields are defined in [etc/field-defs.js](etc/field-defs.js).
+
+Each record returned by the [models](models/__Model.js) class methods ``filter()`` ``find()`` is in actuality a clone of its corresponding field definition in [etc/field-defs.js](etc/field-defs.js) with properties from the corresponding Datastore *Entity* merged in.
+
+For example, records returned by a call to ``filter('peru.san_martin', 'es')``on the *Array* model will include a record ``array-forest_management-peru.san_martin``. This record will include relevant "forest_management" properties (Spanish version of "label", "units", etc) from the [etc/field-defs.js](etc/field-defs.js) with the actual data for "peru.san_martin" merged in. This actual data would include the properties "rows", "citation", "timestamp".
+
+The "Partnership" *Kind* does not use this templating system.
+
+#### Categorical Data and Field Overrides
 
 ### Citations
 
-Citation text (HTML) is stored as a single text attribute for each entity of type _Value_, _Array_, _Text_, and _Framework_ (_Partnership_ and _Contact_ types are not cited).
+Citation text (HTML) is stored as a single text attribute for each entity of type _Value_, _Array_, _Text_, and _Framework_ (_Partnership_ and _Contact_ kinds are not cited).
 
 Citations are not translated.
 
@@ -97,7 +121,13 @@ Additionally, changes to ``Value`` or ``Array`` types trigger a call to ``summar
 
 TODO: use Redis instead of the module-level variable ``SUMMARY_DATA``.
 
+
 ### Translated Content
+
+
+### Timestamps
+
+
 
 ### Basic Directory Structure
 
