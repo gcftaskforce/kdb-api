@@ -153,7 +153,7 @@ To recap from the subsection *Derived (Calculated) Values and Summary Data* abov
 
 The **derived entity properties** are, on the other hand, *Entity* properties derived from *Entity* properties stored in the Datastore.
 
-For illustration, refer to the ``fullName`` derived property in [models/Contact](models/Contact). Note that a function callback is specified using ``get``. The ``context`` argument of the callback will have access to both the *Entity* value properties as well as the field definition as specified in [/etc/field-defs.js](/etc/field-defs.js).
+For illustration, refer to the ``fullName`` derived property in [models/Contact](models/Contact.js). Note that a function callback is specified using ``get``. The ``context`` argument of the callback will have access to both the *Entity* value properties as well as the field definition as specified in [/etc/field-defs.js](/etc/field-defs.js).
 
 ### Translated Content
 
