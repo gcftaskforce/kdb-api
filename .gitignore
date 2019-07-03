@@ -3,6 +3,7 @@ node_modules/
 private/
 PRIVATE/
 public/
+scripts/
 logs/
 npm-debug.log
 .env
