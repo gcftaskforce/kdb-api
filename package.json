@@ -2,6 +2,9 @@
   "name": "gcftaskforce-kdb-api",
   "version": "2.0.1",
   "description": "API component for Knowledge Database",
+  "engines" : {
+    "node" : ">12.0.0"
+  },
   "main": "bin/www",
   "scripts": {
     "test": "jest --detectOpenHandles --noStackTrace --bail",

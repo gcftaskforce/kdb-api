@@ -157,10 +157,7 @@ For illustration, refer to the ``fullName`` derived property in [models/Contact]
 
 ### Translated Content
 
-
 ### Timestamps
-
-
 
 ### Basic Directory Structure
 
