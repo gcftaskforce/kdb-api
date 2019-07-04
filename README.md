@@ -72,6 +72,8 @@ The API routes are grouped into public and private. Please see the app for detai
 - The public routes are strictly GET and prefixed by '/json'.
 - The private routes are strictly POST.
 
+For convenience, public routes are grouped into *collection*s. The *data" collection includes *value*, *array*, *contact*, and *text* types. The collections *frameworks* and *partnerships* simply return their respective types.
+
 ### Google Cloud Datastore Nomenclature and Integration
 
 Please refer to [Datastore overview](https://cloud.google.com/datastore/docs/concepts/overview). Google Cloud Datastore is a schemaless database. It is up to the developer to enforce structure and organization through design using Google Cloud Datastore organizational concepts *Kind*, *Entity*, and *Property*.
