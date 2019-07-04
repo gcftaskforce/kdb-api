@@ -8,9 +8,16 @@ The GCF Task Force Knowledge Database (KDB) consists of three components:
 2. an MVC-style website
 3. a custom client-based (Webpack/babel compiled) content management system (CMS) inline with the website.
 
-Both the API and website are Node JS (ES 6) Express applications proxied through Apache. PM2 is used to manage the two (API and website) processes. Everything runs on a virtual machine hosted on Google Cloud.
+Both the API and website components are built on the following stack.
 
-Note that all application-related files are stored on a separately requisitioned disk mounted at /data.
+- Node JS (ES 6)
+- Apache
+- Express proxied through Apache
+- PM2
+
+Everything runs on a virtual machine hosted on Google Cloud.
+
+Note that all application-related files are stored on a separately requisitioned disk mounted at ``/data``.
 
 Google Cloud Datastore serves as the backend database. However, the API is the only component that interacts directly with the database.
 
