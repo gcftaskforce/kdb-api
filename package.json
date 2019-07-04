@@ -2,8 +2,8 @@
   "name": "gcftaskforce-kdb-api",
   "version": "2.0.1",
   "description": "API component for Knowledge Database",
-  "engines" : {
-    "node" : ">12.0.0"
+  "engines": {
+    "node": ">12.0.0"
   },
   "main": "bin/www",
   "scripts": {
@@ -24,7 +24,7 @@
     "eslint": "6.0.1",
     "eslint-config-airbnb": "17.1.1",
     "eslint-plugin-import": "2.18.0",
-    "eslint-plugin-jest": "22.7.1",
+    "eslint-plugin-jest": "22.7.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.14.2"
   },
