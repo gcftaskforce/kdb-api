@@ -34,8 +34,7 @@ const INTERNAL_TYPES = [
 
 const getDefaultValue = (type, params = {}) => {
   // check if type belongs to INTERNAL_TYPES
-  const internalType = INTERNAL_TYPES.find(type);
-  if (internalType) {
+  if (INTERNAL_TYPES.includes(type)) {
     if (type === 'id') {
       if (params.id) return params.id;
       // try to build id from fieldName and regionId
@@ -78,7 +77,7 @@ const getDefaultValue = (type, params = {}) => {
     if (type === 'timestamps') {
       return [];
     }
-    return internalType[1]; // return the default
+    return ''; // default to empty string
   }
   // this is a data type
   if (type === 'array') return [];
