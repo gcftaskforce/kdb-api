@@ -23,50 +23,68 @@ const LANGS = require('../etc/langs');
  */
 
 const INTERNAL_TYPES = [
-  ['id', ''],
-  ['fieldName', ''],
-  ['regionId', ''],
-  ['nationId', ''],
-  ['jurisdictionId', ''],
-  ['timestamp', ''],
-  ['timestamps', []],
+  'id',
+  'fieldName',
+  'regionId',
+  'nationId',
+  'jurisdictionId',
+  'timestamp',
+  'timestamps',
 ];
 
 const getDefaultValue = (type, params = {}) => {
+  // check if type belongs to INTERNAL_TYPES
+  const internalType = INTERNAL_TYPES.find(type);
+  if (internalType) {
+    if (type === 'id') {
+      if (params.id) return params.id;
+      // try to build id from fieldName and regionId
+      if (!(params.fieldName && params.regionId)) throw new Error('ARGUMENT_ERROR: either "id" or "fieldName" and "regionId" must be specified.');
+      return `${this.FIELD_TYPE}-${params.fieldName}-${params.regionId}`;
+    }
+    if (type === 'regionId') {
+      if (params.regionId) return params.regionId;
+      // try to extract regionId from the id
+      if (!params.id) {
+        throw new Error('ARGUMENT_ERROR: Unable to determine "regionId". Ether a valid "id" or "regionId" must be specified.');
+      }
+      const idSegments = params.id.split('-');
+      // id is of the form fieldType-fieldName-regionId
+      if (!idSegments[2]) throw new Error('ARGUMENT_ERROR: Unable to determine "regionId" from given "id".');
+      return idSegments[2];
+    }
+    if (type === 'nationId') {
+      if (params.nationId) return params.nationId;
+      // try to extract nationId from the id
+      if (!params.id) {
+        throw new Error('ARGUMENT_ERROR: Unable to determine "nationId". Ether a valid "id" or "nationId" must be specified.');
+      }
+      const idSegments = params.id.split('-');
+      // id is of the form fieldType-fieldName-regionId
+      if (!idSegments[2]) throw new Error('ARGUMENT_ERROR: Unable to determine "regionId" from given "id".');
+      return idSegments[2];
+    }
+    if (type === 'fieldName') {
+      if (params.fieldName) return params.fieldName;
+      // try to extract fieldName from the id
+      if (!params.id) {
+        throw new Error('ARGUMENT_ERROR: Unable to determine "fieldName". Ether a valid "id" or "fieldName" must be specified.');
+      }
+      const idSegments = params.id.split('-');
+      // id is of the form fieldType-fieldName-regionId
+      if (!idSegments[1]) throw new Error('ARGUMENT_ERROR: Unable to determine "fieldName" from given "id".');
+      return idSegments[1];
+    }
+    if (type === 'timestamps') {
+      return [];
+    }
+    return internalType[1]; // return the default
+  }
+  // this is a data type
   if (type === 'array') return [];
   if (type === 'list') return [];
   if (type === 'number') return null;
-  if (type === 'timestamp') return '';
-  if (type === 'timestamps') return [];
-  if (type === 'id') {
-    if (params.id) return params.id;
-    // try to build id from fieldName and regionId
-    if (!(params.fieldName && params.regionId)) throw new Error('ARGUMENT_ERROR: either "id" or "fieldName" and "regionId" must be specified.');
-    return `${this.FIELD_TYPE}-${params.fieldName}-${params.regionId}`;
-  }
-  if (type === 'regionId') {
-    if (params.regionId) return params.regionId;
-    // try to extract regionId from the id
-    if (!params.id) {
-      throw new Error('ARGUMENT_ERROR: Unable to determine "regionId". Ether a valid "id" or "regionId" must be specified.');
-    }
-    const idSegments = params.id.split('-');
-    // id is of the form fieldType-fieldName-regionId
-    if (!idSegments[2]) throw new Error('ARGUMENT_ERROR: Unable to determine "regionId" from given "id".');
-    return idSegments[2];
-  }
-  if (type === 'fieldName') {
-    if (params.fieldName) return params.fieldName;
-    // try to extract fieldName from the id
-    if (!params.id) {
-      throw new Error('ARGUMENT_ERROR: Unable to determine "fieldName". Ether a valid "id" or "fieldName" must be specified.');
-    }
-    const idSegments = params.id.split('-');
-    // id is of the form fieldType-fieldName-regionId
-    if (!idSegments[1]) throw new Error('ARGUMENT_ERROR: Unable to determine "fieldName" from given "id".');
-    return idSegments[1];
-  }
-  return '';
+  return ''; // default is just empty string
 };
 
 class Model {
@@ -312,8 +330,13 @@ class Model {
   async updateEntity(submission, id) {
     if (!(submission instanceof Object)) throw new Error('ARGUMENT_ERROR: "submission" must be an Object with a with key/value pairs corresponding to the fields to be updated.');
     if (submission.citation !== undefined) throw new Error('ARGUMENT_ERROR: "submission" cannot include a "citation" property - use the "updateCitation" method instead');
+    // build array of property names being submitted
     const submittedFieldList = Object.keys(submission).sort().join('\n');
-    const permittedFieldList = this.ENTITY_PROPERTIES.filter(p => (p.isSubmitted)).map(p => p.name).sort().join('\n');
+    // build array of permitted property names (not derived and not an internal type)
+    const permittedFieldList = this.ENTITY_PROPERTIES.filter((p) => {
+      if (p.get) return false; // exclude derived fields
+      return (!INTERNAL_TYPES.includes(p.type)); // exclude internal types
+    }).map(p => p.name).sort().join('\n');
     if (submittedFieldList !== permittedFieldList) throw new Error(`ARGUMENT_ERROR: "submission" must include the following properties and no others:\n ${permittedFieldList}`);
     const checkedAndClonedSubmission = {};
     Object.entries(submission).forEach(([submittedPropertyName, submittedPropertyValue]) => {
@@ -330,7 +353,8 @@ class Model {
     const propertyName = submittedPropertyList[0];
     const propertyDef = this.ENTITY_PROPERTIES.find(p => (p.name === propertyName));
     if (propertyDef === undefined) throw new Error(`ARGUMENT_ERROR: property name "${propertyName}" is not defined`);
-    if (!propertyDef.isSubmitted) throw new Error(`ARGUMENT_ERROR: property name "${propertyName}" cannot be updated through a submission. The definition does not specify a truty "isSubmitted"`);
+    if (propertyDef.get) throw new Error(`ARGUMENT_ERROR: property name "${propertyName}" is derived and cannot be updated`);
+    if (INTERNAL_TYPES.includes(propertyDef.type)) throw new Error(`ARGUMENT_ERROR: property name "${propertyName}" is an internal type and cannot be updated`);
     const checkedAndClonedSubmission = {};
     checkedAndClonedSubmission[propertyName] = submission[propertyName];
     return this.update(checkedAndClonedSubmission, { id, propertyName });
