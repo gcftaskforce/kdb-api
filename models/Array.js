@@ -31,7 +31,6 @@ const ENTITY_DEF = {
       isIndexed: false,
     }, {
       name: 'rows',
-      isSubmitted: true,
       type: 'array',
       isIndexed: false,
     }, {

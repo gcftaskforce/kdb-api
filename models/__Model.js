@@ -7,7 +7,6 @@ const { Datastore } = require('@google-cloud/datastore');
 
 const copyObjectProperties = require('../lib/copy-object-properties');
 const findDataTranslation = require('../lib/find-data-translation');
-// const findLabelTranslation = require('../lib/find-label-translation');
 const findRegionDefinition = require('../lib/find-region-definition');
 const getLabelLookup = require('../lib/get-label-lookup');
 const getNewTimestamp = require('../lib/get-new-timestamp');
@@ -18,7 +17,20 @@ const ALL_REGION_DEFS = require('../etc/regions');
 
 const LANGS = require('../etc/langs');
 
-// const POSSIBLE_NAMESPACES = ['jurisdictional', 'national', 'regional', 'global'];
+/**
+ * these "types" CANNOT be changed through update submissions
+ * structured as [type. default]
+ */
+
+const INTERNAL_TYPES = [
+  ['id', ''],
+  ['fieldName', ''],
+  ['regionId', ''],
+  ['nationId', ''],
+  ['jurisdictionId', ''],
+  ['timestamp', ''],
+  ['timestamps', []],
+];
 
 const getDefaultValue = (type, params = {}) => {
   if (type === 'array') return [];

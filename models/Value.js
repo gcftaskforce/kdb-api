@@ -34,13 +34,10 @@ const ENTITY_DEF = {
     }, {
       name: 'amount',
       type: 'number',
-      isSubmitted: true,
     }, {
       name: 'year',
-      isSubmitted: true,
     }, {
       name: 'currency',
-      isSubmitted: true,
     }, {
       name: 'string',
       default: '',

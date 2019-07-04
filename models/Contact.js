@@ -22,16 +22,12 @@ const ENTITY_DEF = {
       type: 'timestamp',
     }, {
       name: 'firstName',
-      isSubmitted: true,
     }, {
       name: 'lastName',
-      isSubmitted: true,
     }, {
       name: 'email',
-      isSubmitted: true,
     }, {
       name: 'companyTitle',
-      isSubmitted: true,
     }, {
       name: 'fullName',
       get: (submission = {}) => { return `${(submission.firstName || '').trim()} ${(submission.lastName || '').trim()}`.trim(); },

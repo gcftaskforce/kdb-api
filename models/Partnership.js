@@ -51,13 +51,11 @@ const ENTITY_DEF = {
       name: 'name',
       isTranslated: true,
       isIndexed: false,
-      isSubmitted: true,
       labels: 'Name',
     }, {
       name: 'link',
       isTranslated: false,
       isIndexed: false,
-      isSubmitted: true,
       type: 'text',
       labels: 'Link',
     }, {
@@ -75,7 +73,6 @@ const ENTITY_DEF = {
     }, {
       name: 'jurisdictions',
       isTranslated: false,
-      isSubmitted: true,
       type: 'list', /** array of strings */
     }, {
       name: 'partners',
