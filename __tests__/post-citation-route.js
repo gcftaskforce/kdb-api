@@ -6,7 +6,6 @@ const debug = require('debug')('api:test');
 const { postToAPI, getFromAPI } = require('../lib/');
 
 const { TEST_ID } = process.env;
-const INVALID_TEST_ID = '7cef1b27-fc6c-4506-92cf-171ab695d395';
 
 let IS_EMULATOR = false;
 
@@ -28,31 +27,10 @@ describe('json route for "region-defs"', () => {
   });
 });
 
-describe('POST route for "value" (invalid authentication)', () => {
-  let apiResponse;
-
-  test('API call works', () => {
-    const params = {
-      id: ID,
-      lang: LANG,
-      testId: INVALID_TEST_ID,
-    };
-    return postToAPI('get', params)
-      .then((resData) => {
-        apiResponse = resData;
-      });
-  });
-
-  test('unauthenticated POST returns 401', () => {
-    expect(apiResponse).toBe(null);
-  });
-});
-
 describe('POST route for "value"', () => {
-  const ADDEND = 10;
   let rec;
-  let oldAmount;
-  let newAmount;
+  let oldCitation;
+  const newCitation = '<p>citation</p>';
 
   test('get value works', () => {
     const params = {
@@ -66,14 +44,15 @@ describe('POST route for "value"', () => {
       });
   });
 
-  test('record has amount', () => {
+  test('record has "citation" of type string and non-zero length ', () => {
     expect(typeof rec).toBe('object');
-    expect(Object.keys(rec)).toContain('amount');
-    oldAmount = rec.amount || 0;
-    newAmount = oldAmount + ADDEND;
+    expect(Object.keys(rec)).toContain('citation');
+    expect(typeof rec.citation).toBe('string');
+    expect(rec.citation.length).not.toBe(0);
+    oldCitation = rec.citation;
   });
 
-  test('update value works', () => {
+  test('update citation works', () => {
     expect(IS_EMULATOR).toBe(true);
     const params = {
       id: ID,
@@ -81,17 +60,15 @@ describe('POST route for "value"', () => {
       lang: LANG,
     };
     const submission = {
-      string: String(newAmount),
-      year: '',
-      currency: '',
+      citation: newCitation,
     };
-    return postToAPI('updateEntity', params, submission)
+    return postToAPI('updateCitation', params, submission)
       .then((resData) => {
-        expect(resData.amount).toBe(newAmount);
+        expect(resData.citation).toBe(newCitation);
       });
   });
 
-  test('restore original value works', () => {
+  test('restore original citation works', () => {
     expect(IS_EMULATOR).toBe(true);
     const params = {
       id: ID,
@@ -99,13 +76,11 @@ describe('POST route for "value"', () => {
       lang: LANG,
     };
     const submission = {
-      string: String(oldAmount),
-      year: '',
-      currency: '',
+      citation: oldCitation,
     };
-    return postToAPI('updateEntity', params, submission)
+    return postToAPI('updateCitation', params, submission)
       .then((resData) => {
-        expect(resData.amount).toBe(oldAmount);
+        expect(resData.citation).toBe(oldCitation);
       });
   });
 });
