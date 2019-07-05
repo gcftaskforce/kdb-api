@@ -10,6 +10,32 @@ const BASE_URI = `http://localhost:${process.env.PORT}`;
 const REGION_ID = 'brazil.acre';
 const LANG = 'pt';
 
+/**
+ * Test public API routes, namely:
+ *    summary data
+ *    'data' collection
+ *    'framework' collection
+ *    'partnership' collection
+ */
+
+describe('json route for "region defs"', () => {
+  const COLLECTION_NAME = 'summary-data';
+  let collection;
+
+  test('API returns JSON', () => {
+    return fetch(`${BASE_URI}/json/${COLLECTION_NAME}.json`)
+      .then(res => res.json())
+      .then((jsonData) => { collection = jsonData; return jsonData; });
+  });
+
+  test('"summary-data" exists and is populated', () => {
+    // debug(collection);
+    expect(collection).toHaveProperty('recs');
+    expect(Array.isArray(collection.recs)).toBe(true);
+    expect(collection.recs.length).not.toBe(0);
+  });
+});
+
 describe('json route for "sumary-data" collection', () => {
   const COLLECTION_NAME = 'summary-data';
   let collection;
@@ -21,6 +47,7 @@ describe('json route for "sumary-data" collection', () => {
   });
 
   test('"summary-data" exists and is populated', () => {
+    // debug(collection);
     expect(collection).toHaveProperty('recs');
     expect(Array.isArray(collection.recs)).toBe(true);
     expect(collection.recs.length).not.toBe(0);
@@ -38,6 +65,7 @@ describe('json route for "sumary-data" collection including labels', () => {
   });
 
   test('"summary-data" exists and is populated', () => {
+    // debug(collection.labels);
     expect(collection).toHaveProperty('recs');
     expect(Array.isArray(collection.recs)).toBe(true);
     expect(collection.recs.length).not.toBe(0);
