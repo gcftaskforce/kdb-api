@@ -175,19 +175,19 @@ const getContext = (dependents, regionId) => {
 
 const save = async (summaryData) => {
   const derivedFieldPaths = DERIVED_FIELD_DEFS.map(d => `${d.type}-${d.name}-${d.namespace}`);
-  const derivedAmounts = [];
+  const derivedValues = [];
   summaryData.forEach((datum) => {
     const segments = datum[0].split('-');
     const id = [segments[0], segments[1], getNamespace(segments[2])].join('-');
-    if (derivedFieldPaths.includes(id)) derivedAmounts.push([datum[0], datum[1]]);
+    if (derivedFieldPaths.includes(id)) derivedValues.push([datum[0], datum[1]]);
   });
-  const promises = derivedAmounts.map(([id, rec]) => {
-    const entity = {
+  const promises = derivedValues.map(([id, rec]) => {
+    const submission = {
       amount: rec.amount || null,
       year: rec.year || '',
       currency: rec.currency || '',
     };
-    return models.value.updateEntity(entity, id);
+    return models.value.updateEntity(submission, id);
   });
   return Promise.all(promises);
 };

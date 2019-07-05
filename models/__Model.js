@@ -27,6 +27,7 @@ const INTERNAL_TYPES = [
   'fieldName',
   'regionId',
   'nationId',
+  'citation',
   'jurisdictionId',
   'timestamp',
   'timestamps',
@@ -315,8 +316,6 @@ class Model {
       data,
       excludeFromIndexes: this.EXCLUDE_FROM_INDEXES,
     };
-    debug('UPDATING');
-    debug(entity);
     try {
       await this.datastore.save(entity);
     } catch (err) {
