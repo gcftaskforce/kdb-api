@@ -27,7 +27,7 @@ const ENTITY_DEF = {
       type: 'timestamp',
     }, {
       name: 'citation',
-      type: 'text',
+      type: 'citation',
       isIndexed: false,
     }, {
       name: 'rows',
