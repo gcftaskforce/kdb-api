@@ -15,11 +15,11 @@ Both the API and website components are built on the following stack.
 - Express proxied through Apache
 - PM2
 
-Everything runs on a virtual machine hosted on Google Cloud.
+Everything runs on a Debian virtual machine instance hosted on Google Cloud.
 
-Note that all application-related files are stored on a separately requisitioned disk mounted at ``/data``.
+Note that the applications (*kdb-api* and *kdb-site*) as well as the configuration files are stored on a separately requisitioned disk mounted at ``/data``.
 
-Google Cloud Datastore serves as the backend database. However, the API is the only component that interacts directly with the database.
+Google Cloud [Datastore](https://cloud.google.com/datastore/) serves as the backend database. The API is the only component that interacts directly with the database.
 
 Redis is used to store session state for authentication. Session state is shared between API and website components.
 
@@ -128,7 +128,7 @@ Citation text (HTML) is stored as a single text attribute for each entity of typ
 
 Citations are not translated.
 
-For convenience, the models use an updateCitation() method available through the POST API.
+For convenience, the models use an ``updateCitation()`` method available through the POST API.
 
 ### Derived (Calculated) Values and Summary Data
 
@@ -165,6 +165,14 @@ The **derived entity properties** are, on the other hand, *Entity* properties de
 For illustration, refer to the ``fullName`` derived property in [models/Contact](models/Contact.js). Note that a function callback is specified using ``get``. The ``context`` argument of the callback will have access to both the *Entity* value properties as well as the field definition as specified in [/etc/field-defs.js](/etc/field-defs.js).
 
 ### Translated Content
+
+Per client specification, all text fields must be stored and available in all supported languages. Supported languages are specified in the array [etc/langs.js](etc/langs.js).
+
+To accommodate this requirement, models including translated properties support an ```updateTranslation()`` method.
+
+#### Google Translation
+
+Per client specification, all text fields must be capable of being Google translated **from** both English and the native language **into** all other supported languages.
 
 ### Timestamps
 
