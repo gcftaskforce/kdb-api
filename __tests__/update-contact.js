@@ -45,7 +45,7 @@ describe('POST route for "contact"', () => {
   test('record has expected properties', () => {
     expect(typeof rec).toBe('object');
     expect(Object.keys(rec)).toContain('firstName');
-    debug(rec);
+    // debug(rec);
   });
 
   // test('update value works', () => {

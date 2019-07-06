@@ -6,12 +6,13 @@ const debug = require('debug')('api:test');
 const { postToAPI, getFromAPI } = require('../lib/');
 
 const { TEST_ID } = process.env;
-const INVALID_TEST_ID = '7cef1b27-fc6c-4506-92cf-171ab695d395';
 
 let IS_EMULATOR = false;
 
 const ID = 'value-land_area-mexico.oaxaca';
 const LANG = 'pt';
+const TEST_VALUE_AMOUNT = 9999;
+const TEST_SUBMISSION_STRING = '9,999';
 
 describe('json route for "region-defs"', () => {
   let data;
@@ -28,31 +29,11 @@ describe('json route for "region-defs"', () => {
   });
 });
 
-describe('POST route for "value" (invalid authentication)', () => {
-  let apiResponse;
-
-  test('API call works', () => {
-    const params = {
-      id: ID,
-      lang: LANG,
-      testId: INVALID_TEST_ID,
-    };
-    return postToAPI('get', params)
-      .then((resData) => {
-        apiResponse = resData;
-      });
-  });
-
-  test('unauthenticated POST returns 401', () => {
-    expect(apiResponse).toBe(null);
-  });
-});
-
 describe('POST route for "value"', () => {
-  const ADDEND = 10;
   let rec;
   let oldAmount;
-  let newAmount;
+  let oldTimestamp;
+  let newTimestamp;
 
   test('get value works', () => {
     const params = {
@@ -70,7 +51,8 @@ describe('POST route for "value"', () => {
     expect(typeof rec).toBe('object');
     expect(Object.keys(rec)).toContain('amount');
     oldAmount = rec.amount || 0;
-    newAmount = oldAmount + ADDEND;
+    oldTimestamp = rec.timestamp;
+    // newAmount = oldAmount + ADDEND;
   });
 
   test('update value works', () => {
@@ -81,13 +63,15 @@ describe('POST route for "value"', () => {
       lang: LANG,
     };
     const submission = {
-      string: String(newAmount),
+      string: TEST_SUBMISSION_STRING,
       year: '',
       currency: '',
     };
     return postToAPI('updateEntity', params, submission)
       .then((resData) => {
-        expect(resData.amount).toBe(newAmount);
+        newTimestamp = resData.timestamp;
+        expect(resData.amount).toBe(TEST_VALUE_AMOUNT);
+        // debug(oldTimestamp, newTimestamp);
       });
   });
 
