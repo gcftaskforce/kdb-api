@@ -9,10 +9,9 @@ const { TEST_ID } = process.env;
 
 let IS_EMULATOR = false;
 
-const ID = 'value-land_area-mexico.oaxaca';
+const ID = 'text.html-overviewForestMonitoringAndMeasurementSystems-brazil.acre';
 const LANG = 'pt';
-const TEST_VALUE_AMOUNT = 9999;
-const TEST_SUBMISSION_STRING = '9,999';
+const TEST_SUBMISSION_TEXT = `<p>I am ${LANG} text</p>`;
 
 describe('json route for "region-defs"', () => {
   let data;
@@ -25,42 +24,35 @@ describe('json route for "region-defs"', () => {
   });
 
   test('responds with object', () => {
-    debug('here 1');
     expect(typeof data).toBe('object');
   });
 });
 
-describe('POST route for "value"', () => {
+describe('POST route for "text"', () => {
   let rec;
-  let oldAmount;
-  let oldTimestamp;
-  let newTimestamp;
+  let originalText = '';
 
-  test('get value works', () => {
+  test('get contact works', () => {
     const params = {
       id: ID,
       lang: LANG,
       testId: TEST_ID,
     };
-    debug('here 2');
     return postToAPI('get', params)
       .then((resData) => {
-        debug('here 3');
         rec = resData;
       });
   });
 
-  test('record has amount', () => {
-    debug('here 4');
+  test('record has expected properties', () => {
     expect(typeof rec).toBe('object');
-    expect(Object.keys(rec)).toContain('amount');
-    oldAmount = rec.amount || 0;
-    oldTimestamp = rec.timestamp;
-    // newAmount = oldAmount + ADDEND;
+    expect(Object.keys(rec)).toContain('text');
+    originalText = rec.text;
+    debug(rec.timestamps);
+    // debug(rec.text);
   });
 
-  test('update value works', () => {
-    debug('here 5');
+  test('update translation works', () => {
     expect(IS_EMULATOR).toBe(true);
     const params = {
       id: ID,
@@ -68,21 +60,16 @@ describe('POST route for "value"', () => {
       lang: LANG,
     };
     const submission = {
-      string: TEST_SUBMISSION_STRING,
-      year: '',
-      currency: '',
+      text: TEST_SUBMISSION_TEXT,
     };
-    return postToAPI('updateEntity', params, submission)
+    return postToAPI('updateTranslation', params, submission)
       .then((resData) => {
-        debug('here 6');
-        newTimestamp = resData.timestamp;
-        expect(resData.amount).toBe(TEST_VALUE_AMOUNT);
-        // debug(oldTimestamp, newTimestamp);
+        expect(resData.text).toBe(TEST_SUBMISSION_TEXT);
+        // debug(resData.timestamps);
       });
   });
 
-  test('restore original value works', () => {
-    debug('here 7');
+  test('restore original translation works', () => {
     expect(IS_EMULATOR).toBe(true);
     const params = {
       id: ID,
@@ -90,14 +77,11 @@ describe('POST route for "value"', () => {
       lang: LANG,
     };
     const submission = {
-      string: String(oldAmount),
-      year: '',
-      currency: '',
+      text: originalText,
     };
-    return postToAPI('updateEntity', params, submission)
+    return postToAPI('updateTranslation', params, submission)
       .then((resData) => {
-        debug('here 8');
-        expect(resData.amount).toBe(oldAmount);
+        expect(resData.text).toBe(originalText);
       });
   });
 });

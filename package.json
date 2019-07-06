@@ -7,7 +7,7 @@
   },
   "main": "bin/www",
   "scripts": {
-    "test": "jest --detectOpenHandles --noStackTrace --bail",
+    "test": "jest --detectOpenHandles --bail",
     "start": "node ./bin/www"
   },
   "repository": {
