@@ -17,7 +17,7 @@ Both the API and website components are built on the following stack.
 
 Everything runs on a Debian virtual machine instance hosted on Google Cloud.
 
-Note that the applications (*kdb-api* and *kdb-site*) as well as the configuration files are stored on a separately requisitioned disk mounted at ``/data``.
+Note that the applications (*kdb-api* and *kdb-site*) as well as the configuration files are stored on a separately requisitioned disk mounted at ``/mnt/disks/data``.
 
 Google Cloud [Datastore](https://cloud.google.com/datastore/) serves as the backend database. The API is the only component that interacts directly with the database.
 
