@@ -24,6 +24,7 @@ const { LABELS } = summaryData;
 // TODO: use REDIS for this!
 summaryData.get().then((data) => {
   SUMMARY_DATA = data;
+  debug(SUMMARY_DATA);
 });
 
 const models = require('./models');
