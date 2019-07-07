@@ -13,7 +13,7 @@ const RedisStore = require('connect-redis')(ExpressSession);
 const { copyPrimitives, getKindFromId } = require('./lib');
 
 const summaryData = require('./summary-data');
-const translation = require('./translation');
+// const translation = require('./translation');
 
 let SUMMARY_DATA = [];
 const MODELS_THAT_INVOKE_RECALCULATION = ['value', 'array']; /** summary data must be updated when any of these are updated  */
@@ -188,7 +188,8 @@ app.post('/translate', async (req, res, next) => {
   //   return;
   // }
   const srcText = data[propertyName];
-  const text = await translation.translate(srcText, fromLang, toLang);
+  // const text = await translation.translate(srcText, fromLang, toLang);
+  const text = srcText;
   res.send({ text });
 });
 
