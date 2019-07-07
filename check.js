@@ -22,6 +22,6 @@ const ds = new Datastore();
   } catch (err) {
     throw err;
   }
-  // debug(entities);
+  debug(entities);
   return entities;
 })();
