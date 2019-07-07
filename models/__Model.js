@@ -33,6 +33,8 @@ const INTERNAL_TYPES = [
   'timestamps',
 ];
 
+const ds = new Datastore();
+
 const getDefaultValue = (type, params = {}) => {
   // check if type belongs to INTERNAL_TYPES
   if (INTERNAL_TYPES.includes(type)) {
@@ -109,7 +111,6 @@ class Model {
     this.ENTITY_PROPERTIES.forEach((p) => {
       if (p.labels) this.ENTITY_LABELS.push({ name: p.name, labels: p.labels });
     });
-    this.datastore = new Datastore();
   }
 
   copyTranslatedEntityProperties(srcEntity = {}, context = {}) {
@@ -166,10 +167,10 @@ class Model {
     const regionId = idSegments[2] || '';
     const regionDef = findRegionDefinition(ALL_REGION_DEFS, regionId);
     if (!regionDef) throw new Error(`NOT_FOUND: id "${id}" includes an invalid region segment ("${regionId}")`);
-    const dsQuery = this.datastore.createQuery(this.ENTITY_KIND).filter('id', '=', id);
+    const dsQuery = ds.createQuery(this.ENTITY_KIND).filter('id', '=', id);
     let entity;
     try {
-      const results = await this.datastore.runQuery(dsQuery);
+      const results = await ds.runQuery(dsQuery);
       if (results[0].length) {
         [[entity]] = results;
       }
@@ -215,10 +216,10 @@ class Model {
     const namespace = (regionSegments.length === 1) ? 'national' : 'jurisdictional';
     const filterPropertyName = (this.ENTITY_PROPERTIES.find(p => (p.type === 'regionId')) || {}).name || 'regionId';
     const filterPropertyValue = (filterPropertyName === 'nationId') ? regionSegments[0] : regionId;
-    const dsQuery = this.datastore.createQuery(this.ENTITY_KIND).filter(filterPropertyName, '=', filterPropertyValue);
+    const dsQuery = ds.createQuery(this.ENTITY_KIND).filter(filterPropertyName, '=', filterPropertyValue);
     let entities = [];
     try {
-      const results = await this.datastore.runQuery(dsQuery);
+      const results = await ds.runQuery(dsQuery);
       if (results[0].length) {
         [entities] = results;
       }
@@ -283,9 +284,9 @@ class Model {
     if (!regionDef) throw new Error(`NOT_FOUND: id "${id}" includes an invalid region segment ("${regionId}")`);
     let data;
     let key;
-    const dsQuery = this.datastore.createQuery(this.ENTITY_KIND).filter('id', '=', id);
+    const dsQuery = ds.createQuery(this.ENTITY_KIND).filter('id', '=', id);
     try {
-      const results = await this.datastore.runQuery(dsQuery);
+      const results = await ds.runQuery(dsQuery);
       if (results[0].length) {
         [[data]] = results;
       }
@@ -294,10 +295,10 @@ class Model {
     }
     if (data) {
       // there is an existing entity, just get the existing key
-      key = data[this.datastore.KEY];
+      key = data[ds.KEY];
     } else {
       // create a new default entity (and key)
-      key = this.datastore.key([this.ENTITY_KIND, id]);
+      key = ds.key([this.ENTITY_KIND, id]);
       data = this.getDefaultEntity({ id, regionId });
     }
     Object.entries(submission).forEach(([submittedPropertyName, submittedPropertyValue]) => {
@@ -317,7 +318,7 @@ class Model {
       excludeFromIndexes: this.EXCLUDE_FROM_INDEXES,
     };
     try {
-      await this.datastore.save(entity);
+      await ds.save(entity);
     } catch (err) {
       throw err;
     }
@@ -384,10 +385,10 @@ class Model {
   }
 
   async delete(id) {
-    const dsQuery = this.datastore.createQuery(this.ENTITY_KIND).filter('id', '=', id);
+    const dsQuery = ds.createQuery(this.ENTITY_KIND).filter('id', '=', id);
     let entity;
     try {
-      const results = await this.datastore.runQuery(dsQuery);
+      const results = await ds.runQuery(dsQuery);
       if (results[0].length) {
         [[entity]] = results;
       }
@@ -395,16 +396,16 @@ class Model {
       throw err;
     }
     if (!entity) return false;
-    const key = entity[this.datastore.KEY];
-    await this.datastore.delete(key);
+    const key = entity[ds.KEY];
+    await ds.delete(key);
     return true;
   }
 
   async dump(fieldNames) {
-    const dsQuery = this.datastore.createQuery(this.ENTITY_KIND);
+    const dsQuery = ds.createQuery(this.ENTITY_KIND);
     let entities = [];
     try {
-      const results = await this.datastore.runQuery(dsQuery);
+      const results = await ds.runQuery(dsQuery);
       if (results[0].length) {
         [entities] = results;
       }
