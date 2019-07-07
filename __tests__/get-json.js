@@ -1,6 +1,8 @@
 'use strict';
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
 const debug = require('debug')('api:test');
 
 const fetch = require('node-fetch');
@@ -36,7 +38,7 @@ describe('json route for "region defs"', () => {
   });
 });
 
-describe('json route for "sumary-data" collection', () => {
+describe('json route for "summary-data" collection', () => {
   const COLLECTION_NAME = 'summary-data';
   let collection;
 
@@ -54,7 +56,7 @@ describe('json route for "sumary-data" collection', () => {
   });
 });
 
-describe('json route for "sumary-data" collection including labels', () => {
+describe('json route for "summary-data" collection including labels', () => {
   const COLLECTION_NAME = 'summary-data';
   let collection;
 
@@ -100,7 +102,11 @@ describe('json route for "data" collection', () => {
   test('API returns JSON', () => {
     return fetch(`${BASE_URI}/json/${COLLECTION_NAME}-${REGION_ID}-${LANG}.json`)
       .then(res => res.json())
-      .then((jsonData) => { collection = jsonData; return jsonData; });
+      .then((jsonData) => {
+        collection = jsonData;
+        debug(collection);
+        return jsonData;
+      });
   });
 
   test('"array" exists and is populated', () => {
