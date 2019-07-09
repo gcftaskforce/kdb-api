@@ -14,7 +14,10 @@
     "type": "git",
     "url": "git+ssh://git@github.com/gcftaskforce/kdb-api.git"
   },
-  "author": "D Anderson",
+  "author": {
+    "name" : "D Anderson",
+    "email" : "synchronopeia@gmail.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/gcftaskforce/kdb-api/issues"
