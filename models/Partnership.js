@@ -79,7 +79,6 @@ const ENTITY_DEF = {
       isTranslated: true,
       isIndexed: false,
       type: 'text',
-      listSeparator: '|',
       labels: [
         ['en', 'Partners'],
         ['es', 'Socios'],
