@@ -13,7 +13,7 @@ const RedisStore = require('connect-redis')(ExpressSession);
 const { copyPrimitives, getKindFromId } = require('./lib');
 
 const summaryData = require('./summary-data');
-// const translation = require('./translation');
+const translation = require('./translation');
 
 let SUMMARY_DATA = [];
 const MODELS_THAT_INVOKE_RECALCULATION = ['value', 'array']; /** summary data must be updated when any of these are updated  */
@@ -24,9 +24,6 @@ const { LABELS } = summaryData;
 // TODO: use REDIS for this!
 summaryData.get().then((data) => {
   SUMMARY_DATA = data;
-  SUMMARY_DATA.forEach((data) => {
-    debug(data);
-  });
 });
 
 const models = require('./models');
@@ -58,6 +55,7 @@ const app = express();
 /**
   Set up Redis/Express session store
 */
+
 const SESSION_TTL = 12 * 3600;
 if (SESSION_NAME && SESSION_SECRET) {
   app.use(ExpressSession({
@@ -182,15 +180,29 @@ app.post('/translate', async (req, res, next) => {
     next(new createError.MethodNotAllowed(`'${modelName}' doesn't support ${methodName}`));
     return;
   }
-  const data = await model.find(id, fromLang);
+  let data = await model.find(id, fromLang);
   // if (!data) {
   //   next(new createError.MethodNotAllowed(`'${modelName}' doesn't support ${methodName}`));
   //   return;
   // }
-  const srcText = data[propertyName];
-  // const text = await translation.translate(srcText, fromLang, toLang);
-  const text = srcText;
-  res.send({ text });
+  const fromText = data[propertyName];
+  let toText = '';
+  try {
+    toText = await translation.translate(fromText, fromLang, toLang);
+  } catch (err) {
+    next(err);
+    return;
+  }
+  // save the translation
+  try {
+    // build submission using propertyName
+    const submission = {};
+    submission[propertyName] = toText;
+    data = await model.updateTranslation(submission, toLang, id);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.post('/get', async (req, res, next) => {
