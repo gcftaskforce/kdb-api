@@ -46,7 +46,7 @@
     "jest": "24.8.0",
     "js-yaml": "3.13.1",
     "klaw-sync": "6.0.0",
-    "lodash": "4.17.12",
+    "lodash": "4.17.14",
     "node-fetch": "2.6.0",
     "redis": "2.8.0",
     "uniqid": "5.0.3",
