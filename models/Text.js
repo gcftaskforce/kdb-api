@@ -4,7 +4,6 @@ const debug = require('debug')('api:model:Text');
 const _ = require('lodash');
 
 const findLabelTranslation = require('../lib/find-label-translation');
-// const findDataTranslation = require('../lib/find-data-translation');
 
 const Model = require('./__Model');
 
@@ -20,9 +19,6 @@ const ENTITY_DEF = {
     }, {
       name: 'regionId',
       type: 'regionId',
-    }, {
-      name: 'timestamp',
-      type: 'timestamp',
     }, {
       name: 'timestamps',
       type: 'timestamps',

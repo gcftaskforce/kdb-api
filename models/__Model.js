@@ -6,7 +6,7 @@ const createError = require('http-errors');
 const { Datastore } = require('@google-cloud/datastore');
 
 const copyObjectProperties = require('../lib/copy-object-properties');
-const findDataTranslation = require('../lib/find-data-translation');
+const findTextTranslation = require('../lib/find-text-translation');
 const findRegionDefinition = require('../lib/find-region-definition');
 const getLabelLookup = require('../lib/get-label-lookup');
 const getNewTimestamp = require('../lib/get-new-timestamp');
@@ -118,15 +118,15 @@ class Model {
     // process non-derived properties first
     this.ENTITY_PROPERTIES.forEach((propertyDef) => {
       if (typeof propertyDef.get === 'function') return;
-      let dataValue;
       if (propertyDef.isTranslated) {
-        dataValue = findDataTranslation(srcEntity, propertyDef.name, context.lang, 'en');
+        const { text, lang } = findTextTranslation(srcEntity, propertyDef.name, context.lang, 'en');
+        entity[propertyDef.name] = text;
+        entity.lang = lang;
       } else {
-        dataValue = _.has(srcEntity, propertyDef.name)
+        entity[propertyDef.name] = _.has(srcEntity, propertyDef.name)
           ? srcEntity[propertyDef.name]
           : getDefaultValue(propertyDef.type, context);
       }
-      entity[propertyDef.name] = dataValue;
     });
     // now process derived properties
     this.ENTITY_PROPERTIES.forEach((propertyDef) => {
