@@ -31,6 +31,7 @@ const INTERNAL_TYPES = [
   'jurisdictionId',
   'timestamp',
   'timestamps',
+  'lang',
 ];
 
 const ds = new Datastore();
@@ -137,13 +138,12 @@ class Model {
   }
 
   createRecordFromEntity(entity, labelLookup) {
-    const UNLABELED_TYPES = ['id', 'fieldName', 'regionId', 'timestamp', 'timestamps'];
     const record = {};
     Object.entries(entity).forEach(([propertyName, value]) => {
       const propertyDef = this.ENTITY_PROPERTIES.find(p => (p.name === propertyName));
       if (!propertyDef) return;
       const dataType = propertyDef.type || 'string';
-      if (UNLABELED_TYPES.includes(dataType)) {
+      if (INTERNAL_TYPES.includes(dataType)) {
         record[propertyName] = value;
       } else {
         record[propertyName] = {};
