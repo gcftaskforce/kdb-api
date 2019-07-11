@@ -56,7 +56,6 @@ const ENTITY_DEF = {
       name: 'link',
       isTranslated: false,
       isIndexed: false,
-      type: 'text',
       labels: 'Link',
     }, {
       name: 'description',
@@ -178,7 +177,7 @@ class PartnershipModel extends Model {
     }
     const uid = uniqid();
     const [nationId, jurisdictionSlug] = regionId.split('.');
-    const newId = `partnership-submitted.${uid}-${nationId}-${uid}`;
+    const newId = `partnership-${uid}-${nationId}-${uid}`;
     let newPartnership = await this.updateTranslation(submission, lang, newId);
     if (jurisdictionSlug) {
       newPartnership = await this.updateEntityProperty({ jurisdictions: [jurisdictionSlug] }, newId);
