@@ -118,44 +118,49 @@ class Model {
     const entity = {};
     // process non-derived properties first
     this.ENTITY_PROPERTIES.forEach((propertyDef) => {
-      if (typeof propertyDef.get === 'function') return;
+      const propertyName = propertyDef.name;
+      const propertyType = propertyDef.type || 'string';
+      if (typeof propertyDef.get === 'function') {
+        // use callback for derived properties
+        entity[propertyName] = propertyDef.get(srcEntity, context);
+        return;
+      }
       if (propertyDef.isTranslated) {
-        const { text, lang } = findTextTranslation(srcEntity, propertyDef.name, context.lang, 'en');
-        entity[propertyDef.name] = text;
+        const { text, lang } = findTextTranslation(srcEntity, propertyName, context.lang, 'en');
+        // include (actual) lang
+        entity[propertyName] = text;
         entity.lang = lang;
       } else {
-        entity[propertyDef.name] = _.has(srcEntity, propertyDef.name)
-          ? srcEntity[propertyDef.name]
-          : getDefaultValue(propertyDef.type, context);
+        entity[propertyName] = _.has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
       }
-    });
-    // now process derived properties
-    this.ENTITY_PROPERTIES.forEach((propertyDef) => {
-      if (typeof propertyDef.get !== 'function') return;
-      entity[propertyDef.name] = propertyDef.get(entity, context);
     });
     return entity;
   }
 
-  createRecordFromEntity(entity, labelLookup) {
+  createRecordFromEntity(srcEntity, context, labelLookup) {
     const record = {};
-    Object.entries(entity).forEach(([propertyName, value]) => {
-      const propertyDef = this.ENTITY_PROPERTIES.find(p => (p.name === propertyName));
-      if (!propertyDef) return;
-      const dataType = propertyDef.type || 'string';
-      if (INTERNAL_TYPES.includes(dataType)) {
-        record[propertyName] = value;
+    this.ENTITY_PROPERTIES.forEach((propertyDef) => {
+      const propertyName = propertyDef.name;
+      const propertyType = propertyDef.type || 'string';
+      if (INTERNAL_TYPES.includes(propertyType)) {
+        // internal types are not labeled or translated
+        record[propertyName] = _.has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
+        return;
+      }
+      record[propertyName] = {};
+      record[propertyName].label = labelLookup[propertyName] || '';
+      if (typeof propertyDef.get === 'function') {
+        // use callback for derived properties
+        record[propertyName][propertyType] = propertyDef.get(srcEntity, context);
+        return;
+      }
+      if (propertyDef.isTranslated) {
+        const { text, lang } = findTextTranslation(srcEntity, propertyName, context.lang, 'en');
+        // include (actual) lang
+        record[propertyName][propertyType] = text;
+        record[propertyName].lang = lang;
       } else {
-        record[propertyName] = {};
-        record[propertyName][dataType] = value;
-        if ((typeof propertyDef.listSeparator === 'string') && (typeof value === 'string')) {
-          let list = value.split(propertyDef.listSeparator);
-          if (list.length === 1 && value.split('\n').length > 1) {
-            list = value.split('\n');
-          }
-          record[propertyName].list = list;
-        }
-        record[propertyName].label = labelLookup[propertyName] || '';
+        record[propertyName][propertyType] = _.has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
       }
     });
     return record;
@@ -203,9 +208,9 @@ class Model {
     const context = {
       regionDef, regionId, id, lang,
     };
-    entity = this.copyTranslatedEntityProperties(entity, context);
+    // entity = this.copyTranslatedEntityProperties(entity, context);
     const labelLookup = getLabelLookup(this.ENTITY_LABELS, lang, 'en');
-    return this.createRecordFromEntity(entity, labelLookup);
+    return this.createRecordFromEntity(entity, context, labelLookup);
   }
 
   async filter(regionId, lang) {
@@ -255,8 +260,9 @@ class Model {
     };
     const labelLookup = getLabelLookup(this.ENTITY_LABELS, lang, 'en');
     entities.forEach((srcEntity) => {
-      const entity = this.copyTranslatedEntityProperties(srcEntity, Object.assign({ id: srcEntity.id }, context));
-      records.push(this.createRecordFromEntity(entity, labelLookup));
+      const entity = this.createRecordFromEntity(srcEntity, Object.assign({ id: srcEntity.id }, context), labelLookup);
+      records.push(entity);
+      // records.push(this.createRecordFromEntity(entity, labelLookup));
     });
     return records;
   }
