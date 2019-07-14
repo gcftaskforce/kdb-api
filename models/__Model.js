@@ -385,7 +385,7 @@ class Model {
     if (typeof lang !== 'string') throw new Error('ARGUMENT_ERROR: "lang" argument is required and must be a string');
     if (!LANGS.includes(lang)) throw new Error(`ARGUMENT_ERROR: "lang" ${lang} is not supported`);
     const checkedAndClonedSubmission = {};
-    // translated properties are named as "propertyName-ll" where ll is the lang code
+    // translated properties are named as "propertyName-ll" where ll is the ISO-639-1 lang code
     checkedAndClonedSubmission[`${propertyName}-${lang}`] = submission[propertyName];
     return this.update(checkedAndClonedSubmission, { id, lang, propertyName });
   }

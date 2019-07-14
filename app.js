@@ -21,7 +21,7 @@ const MODELS_THAT_INVOKE_RECALCULATION = ['value', 'array']; /** summary data mu
 const { LABELS } = summaryData;
 
 // keep a copy of current summary data
-// TODO: use REDIS for this!
+// TODO: store this in REDIS!
 summaryData.get().then((data) => {
   SUMMARY_DATA = data;
 });
@@ -168,6 +168,7 @@ app.post('/translate', async (req, res, next) => {
     fromLang,
     toLang,
   } = req.query;
+  const [propertyBaseName, propertyType] = (propertyName || '').split('.');
   const modelName = getKindFromId(id);
   const model = models[modelName];
   // for unsupported model - pass the request to the next route
@@ -185,7 +186,7 @@ app.post('/translate', async (req, res, next) => {
   //   next(new createError.MethodNotAllowed(`'${modelName}' doesn't support ${methodName}`));
   //   return;
   // }
-  const fromText = data[propertyName];
+  const fromText = (propertyType) ? data[propertyBaseName][propertyType] : data[propertyBaseName];
   let toText = '';
   try {
     toText = await translation.translate(fromText, fromLang, toLang);
@@ -197,7 +198,7 @@ app.post('/translate', async (req, res, next) => {
   try {
     // build submission using propertyName
     const submission = {};
-    submission[propertyName] = toText;
+    submission[propertyBaseName] = toText;
     data = await model.updateTranslation(submission, toLang, id);
     res.json(data);
   } catch (err) {
