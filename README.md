@@ -176,14 +176,59 @@ Per client specification, all text fields must be capable of being Google transl
 
 ### Timestamps
 
-ISO-639-1
+Timestamps are ISO 8601 *date and time* strings.
+
+`Array`, `Contact`, and `Value` kinds simply store the string in a `timestamp` property.
+
+Translated kinds (`Text` and `Framework`) as well as the `Partnership` kind instead use a `timestamps` array, with additional tilde-delimited (~) segments specifying respectively `propertyName`, `language`, `modifier` where
+
+- `propertyName` refers to the property to which the timestamp applies
+- `language` (optional) is the ISO-639-1 lang code of the translation
+- `modifier` (optional) any additional information about the translation (at this time only *google* is used)
+
+The following illustrates a `timestamps` array for a `Text` kind.
+
+```javascript
+[
+  "2018-09-05T14:04:03.556Z~text~id",
+  "2018-09-05T14:03:59.821Z~text~fr",
+  "2018-06-15T17:22:48.741Z~text~pt",
+  "2018-06-12T18:06:52.039Z~text~en",
+  "2018-02-06T17:05:08.650Z~text~es~google",
+]
+```
+
+The following illustrates a `timestamps` array for a `Partnership` kind.
+
+```javascript
+[
+  "2018-06-15T18:28:39.321Z~partners~pt",
+  "2018-06-15T18:28:39.321Z~name~pt",
+  "2018-06-15T18:28:39.321Z~jurisdictions",
+  "2018-06-15T18:28:39.321Z~initiativeType~pt",
+  "2018-06-15T18:28:39.321Z~initiativeStatus~pt",
+  "2018-06-15T18:28:39.321Z~description~pt",
+  "2018-02-06T17:05:08.751Z~partners~id~google",
+  "2018-02-06T17:05:08.751Z~name~id~google",
+  "2018-02-06T17:05:08.751Z~initiativeType~id~google",
+  "2018-02-06T17:05:08.751Z~initiativeStatus~id~google",
+  "2018-02-06T17:05:08.751Z~description~id~google",
+  "2018-02-06T17:05:08.650Z~partners~es~google",
+  "2018-02-06T17:05:08.650Z~name~es~google",
+  "2018-02-06T17:05:08.650Z~initiativeType~es~google",
+  "2018-02-06T17:05:08.650Z~initiativeStatus~es~google",
+  "2018-02-06T17:05:08.650Z~description~es~google",
+  "2017-10-31T17:03:20.873Z~partners~en",
+  "2017-10-31T17:03:20.873Z~name~en",
+  "2017-10-31T17:03:20.873Z~initiativeType~en",
+  "2017-10-31T17:03:20.873Z~initiativeStatus~en",
+  "2017-10-31T17:03:20.873Z~description~en",
+]
+```
+
+Note that for *Partnerships*, the capability to edit/translate individual properties was added later. Earlier, all properties were submitted in the same form, resulting in shared ISO 8601 *date and time* strings.
 
 ### Basic Directory Structure
 
-- etc/ data files
-  - fields/ field definitions (by field type)
-  - regions/ region definitions by nation then jurisdiction
-- lib/ common support functions
-- models/ classes for interacting with the database (by field type)
 
 ### Routing
