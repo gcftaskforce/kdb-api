@@ -311,11 +311,13 @@ class Model {
       data[submittedPropertyName] = submittedPropertyValue;
     });
     // update timestamp/timestamps
+    // (don't update timestamp(s) for citation updates)
     if (propertyName !== 'citation') {
-      // don't update timestamp(s) for citation updates
-      if (has(data, 'timestamp')) data.timestamp = getNewTimestamp(propertyName, lang);
+      const modifier = (params.isGoogle) ? 'google' : '';
+      const timestamp = getNewTimestamp(propertyName, lang, modifier);
+      if (has(data, 'timestamp')) data.timestamp = timestamp;
       if (has(data, 'timestamps')) {
-        data.timestamps = getUpdatedTimestamps(data.timestamps, data.timestamp);
+        data.timestamps = getUpdatedTimestamps(data.timestamps, timestamp);
       }
     }
     const entity = {
@@ -374,7 +376,8 @@ class Model {
     return this.update({ citation: submission.citation }, { id, propertyName: 'citation' });
   }
 
-  async updateTranslation(submission, lang, id) {
+  async updateTranslation(submission, lang, id, options = {}) {
+    const isGoogle = ((typeof options === 'object') && (options.isGoogle === true));
     if (!(submission instanceof Object)) throw new Error('ARGUMENT_ERROR: submission must be an Object with a string property corresponding to the field to be updated.');
     const submittedPropertyList = Object.keys(submission);
     if (submittedPropertyList.length !== 1) throw new Error('ARGUMENT_ERROR: submission must have exactly one property corresponding to the field to be updated');
@@ -387,7 +390,9 @@ class Model {
     const checkedAndClonedSubmission = {};
     // translated properties are named as "propertyName-ll" where ll is the ISO-639-1 lang code
     checkedAndClonedSubmission[`${propertyName}-${lang}`] = submission[propertyName];
-    return this.update(checkedAndClonedSubmission, { id, lang, propertyName });
+    return this.update(checkedAndClonedSubmission, {
+      id, lang, propertyName, isGoogle,
+    });
   }
 
   async delete(id) {

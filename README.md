@@ -176,6 +176,8 @@ Per client specification, all text fields must be capable of being Google transl
 
 ### Timestamps
 
+ISO-639-1
+
 ### Basic Directory Structure
 
 - etc/ data files

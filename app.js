@@ -167,6 +167,7 @@ app.post('/translate', async (req, res, next) => {
     propertyName,
     fromLang,
     toLang,
+    type,
   } = req.query;
   const [propertyBaseName, propertyType] = (propertyName || '').split('.');
   const modelName = getKindFromId(id);
@@ -187,9 +188,10 @@ app.post('/translate', async (req, res, next) => {
   //   return;
   // }
   const fromText = (propertyType) ? data[propertyBaseName][propertyType] : data[propertyBaseName];
+  const isString = (type === 'string') || (propertyType === 'string');
   let toText = '';
   try {
-    toText = await translation.translate(fromText, fromLang, toLang);
+    toText = await translation.translate(fromText, fromLang, toLang, isString);
   } catch (err) {
     next(err);
     return;
@@ -199,7 +201,7 @@ app.post('/translate', async (req, res, next) => {
     // build submission using propertyName
     const submission = {};
     submission[propertyBaseName] = toText;
-    data = await model.updateTranslation(submission, toLang, id);
+    data = await model.updateTranslation(submission, toLang, id, { isGoogle: true });
     res.json(data);
   } catch (err) {
     next(err);
