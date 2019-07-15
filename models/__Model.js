@@ -1,7 +1,7 @@
 'use strict';
 
 const debug = require('debug')('api:Model');
-const { has } = require('lodash');
+const has = require('lodash.has');
 const createError = require('http-errors');
 const { Datastore } = require('@google-cloud/datastore');
 

@@ -1,5 +1,5 @@
 const debug = require('debug')('api:model:Contact');
-const { get } = require('lodash');
+const get = require('lodash.get');
 
 const Model = require('./__Model');
 

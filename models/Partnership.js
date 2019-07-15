@@ -1,7 +1,7 @@
 'use strict';
 
 const debug = require('debug')('api:model:Partnership');
-const { get } = require('lodash');
+const get = require('lodash.get');
 const uniqid = require('uniqid');
 const createError = require('http-errors');
 

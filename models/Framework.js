@@ -1,7 +1,7 @@
 'use strict';
 
 const debug = require('debug')('api:model:Text');
-const { get } = require('lodash');
+const get = require('lodash.get');
 
 const findLabelTranslation = require('../lib/find-label-translation');
 

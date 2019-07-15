@@ -1,7 +1,8 @@
 'use strict';
 
 const debug = require('debug')('api:model:Value');
-const { get } = require('lodash');
+const get = require('lodash.get');
+
 const createError = require('http-errors');
 
 const formatAmount = require('../lib/format-amount');

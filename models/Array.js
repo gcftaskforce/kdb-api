@@ -1,5 +1,5 @@
 const debug = require('debug')('api:model:Array');
-const { get } = require('lodash');
+const get = require('lodash.get');
 const createError = require('http-errors');
 
 const isValidAmount = require('../lib/is-valid-amount');
