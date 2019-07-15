@@ -1,5 +1,5 @@
 const debug = require('debug')('api:model:Contact');
-const _ = require('lodash');
+const { get } = require('lodash');
 
 const Model = require('./__Model');
 
@@ -34,7 +34,7 @@ const ENTITY_DEF = {
     }, {
       name: 'label',
       default: '',
-      get: (srcEntity, instance) => { return findLabelTranslation(_.get(instance, 'fieldDef.labels'), _.get(instance, 'lang'), 'en'); },
+      get: (srcEntity, instance) => { return findLabelTranslation(get(instance, 'fieldDef.labels'), get(instance, 'lang'), 'en'); },
     },
   ],
 };

@@ -1,7 +1,7 @@
 'use strict';
 
 const debug = require('debug')('api:model:Text');
-const _ = require('lodash');
+const { get } = require('lodash');
 
 const findLabelTranslation = require('../lib/find-label-translation');
 
@@ -34,7 +34,7 @@ const ENTITY_DEF = {
     }, {
       name: 'label',
       default: '',
-      get: (srcEntity, instance) => { return findLabelTranslation(_.get(instance, 'fieldDef.labels'), _.get(instance, 'lang'), 'en'); },
+      get: (srcEntity, instance) => { return findLabelTranslation(get(instance, 'fieldDef.labels'), get(instance, 'lang'), 'en'); },
     },
   ],
 };

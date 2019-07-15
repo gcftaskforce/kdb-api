@@ -1,7 +1,7 @@
 'use strict';
 
 const debug = require('debug')('api:model:Partnership');
-const _ = require('lodash');
+const { get } = require('lodash');
 const uniqid = require('uniqid');
 const createError = require('http-errors');
 
@@ -145,7 +145,7 @@ const ENTITY_DEF = {
         ['fr', 'Juridictions'],
       ],
       get: (srcEntity, instance) => {
-        return getMappedJurisdictions(_.get(instance, 'regionDef.memberJurisdictions'), srcEntity.jurisdictions);
+        return getMappedJurisdictions(get(instance, 'regionDef.memberJurisdictions'), srcEntity.jurisdictions);
       },
     },
   ],
@@ -160,8 +160,8 @@ class PartnershipModel extends Model {
     // sort Partnerships by name
     const filteredPartnerships = await super.filter(regionId, lang);
     return filteredPartnerships.sort((a, b) => {
-      const nameA = _.get(a, 'name.string', '').toUpperCase();
-      const nameB = _.get(b, 'name.string', '').toUpperCase();
+      const nameA = get(a, 'name.string', '').toUpperCase();
+      const nameB = get(b, 'name.string', '').toUpperCase();
       if (nameA < nameB) return -1;
       if (nameA > nameB) return 1;
       return 0;

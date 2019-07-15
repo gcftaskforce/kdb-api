@@ -1,5 +1,5 @@
 const debug = require('debug')('api:model:Array');
-const _ = require('lodash');
+const { get } = require('lodash');
 const createError = require('http-errors');
 
 const isValidAmount = require('../lib/is-valid-amount');
@@ -37,20 +37,20 @@ const ENTITY_DEF = {
       name: 'rows',
       default: [],
       get: (submission = {}, instance) => {
-        return remapArrayRows(submission.rows, _.get(instance, 'fieldDef'), _.get(instance, 'lang'));
+        return remapArrayRows(submission.rows, get(instance, 'fieldDef'), get(instance, 'lang'));
       },
     }, {
       name: 'label',
       default: '',
-      get: (srcEntity, instance) => { return findLabelTranslation(_.get(instance, 'fieldDef.labels'), _.get(instance, 'lang'), 'en'); },
+      get: (srcEntity, instance) => { return findLabelTranslation(get(instance, 'fieldDef.labels'), get(instance, 'lang'), 'en'); },
     }, {
       name: 'units',
       default: '',
-      get: (srcEntity, instance) => { return _.get(instance, 'fieldDef.units', ''); },
+      get: (srcEntity, instance) => { return get(instance, 'fieldDef.units', ''); },
     }, {
       name: 'categoryLabel',
       default: '',
-      get: (srcEntity, instance) => { return findLabelTranslation(_.get(instance, 'fieldDef.categoryLabels'), _.get(instance, 'lang'), 'en'); },
+      get: (srcEntity, instance) => { return findLabelTranslation(get(instance, 'fieldDef.categoryLabels'), get(instance, 'lang'), 'en'); },
     },
   ],
 };

@@ -1,10 +1,9 @@
 'use strict';
 
 const debug = require('debug')('api:model:Value');
-const _ = require('lodash');
+const { get } = require('lodash');
 const createError = require('http-errors');
 
-const copyObjectProperties = require('../lib/copy-object-properties');
 const formatAmount = require('../lib/format-amount');
 const isValidAmount = require('../lib/is-valid-amount');
 const parseAmount = require('../lib/parse-amount');
@@ -41,23 +40,23 @@ const ENTITY_DEF = {
     }, {
       name: 'string',
       default: '',
-      get: (srcEntity = {}, instance) => { return formatAmount(srcEntity.amount, _.get(instance, 'fieldDef.formatOptions')); },
+      get: (srcEntity = {}, instance) => { return formatAmount(srcEntity.amount, get(instance, 'fieldDef.formatOptions')); },
     }, {
       name: 'label',
       default: '',
-      get: (srcEntity, instance) => { return findLabelTranslation(_.get(instance, 'fieldDef.labels'), _.get(instance, 'lang'), 'en'); },
+      get: (srcEntity, instance) => { return findLabelTranslation(get(instance, 'fieldDef.labels'), get(instance, 'lang'), 'en'); },
     }, {
       name: 'units',
       default: '',
-      get: (srcEntity, instance) => { return _.get(instance, 'fieldDef.units', ''); },
+      get: (srcEntity, instance) => { return get(instance, 'fieldDef.units', ''); },
     }, {
       name: 'isDerived',
       default: false,
-      get: (srcEntity, instance) => { return Boolean(_.get(instance, 'fieldDef.isDerived')); },
+      get: (srcEntity, instance) => { return Boolean(get(instance, 'fieldDef.isDerived')); },
     }, {
       name: 'subType',
       default: '',
-      get: (srcEntity, instance) => { return _.get(instance, 'fieldDef.subType', ''); },
+      get: (srcEntity, instance) => { return get(instance, 'fieldDef.subType', ''); },
     },
   ],
 };

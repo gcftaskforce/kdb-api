@@ -1,7 +1,7 @@
 'use strict';
 
 const debug = require('debug')('api:Model');
-const _ = require('lodash');
+const { has } = require('lodash');
 const createError = require('http-errors');
 const { Datastore } = require('@google-cloud/datastore');
 
@@ -131,7 +131,7 @@ class Model {
         entity[propertyName] = text;
         entity.lang = lang;
       } else {
-        entity[propertyName] = _.has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
+        entity[propertyName] = has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
       }
     });
     return entity;
@@ -144,7 +144,7 @@ class Model {
       const propertyType = propertyDef.type || 'string';
       if (INTERNAL_TYPES.includes(propertyType)) {
         // internal types are not labeled or translated
-        record[propertyName] = _.has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
+        record[propertyName] = has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
         return;
       }
       record[propertyName] = {};
@@ -160,7 +160,7 @@ class Model {
         record[propertyName][propertyType] = text;
         record[propertyName].lang = lang;
       } else {
-        record[propertyName][propertyType] = _.has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
+        record[propertyName][propertyType] = has(srcEntity, propertyName) ? srcEntity[propertyName] : getDefaultValue(propertyType, context);
       }
     });
     return record;
@@ -313,8 +313,8 @@ class Model {
     // update timestamp/timestamps
     if (propertyName !== 'citation') {
       // don't update timestamp(s) for citation updates
-      if (_.has(data, 'timestamp')) data.timestamp = getNewTimestamp(propertyName, lang);
-      if (_.has(data, 'timestamps')) {
+      if (has(data, 'timestamp')) data.timestamp = getNewTimestamp(propertyName, lang);
+      if (has(data, 'timestamps')) {
         data.timestamps = getUpdatedTimestamps(data.timestamps, data.timestamp);
       }
     }
