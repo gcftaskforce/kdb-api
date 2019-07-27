@@ -71,7 +71,7 @@ class ArrayModel extends Model {
         // there must be a string property
         if (row.string === undefined) throw new createError.BadRequest('each submission row must include one of the following properties: "amount" (a valid Number type) or "string" (a string representation of a number)');
         amount = parseAmount(row.string);
-        if (Number.isNaN(amount)) throw new createError.BadRequest(`unable to parse submitted "string" (${row.string}) into a number`); // available to client
+        if (Number.isNaN(amount)) throw new createError.BadRequest(`The entry "${row.string}" is not a valid number`); // available to client
       } else if (!isValidAmount(amount)) {
         throw new createError.BadRequest('"amount" must be a valid number or null (indicating missing)');
       }

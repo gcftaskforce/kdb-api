@@ -85,7 +85,7 @@ app.use(express.urlencoded({ extended: false }));
 */
 
 app.use(ROUTES_THAT_404, (req, res) => {
-  res.status(404).send('');
+  res.status(404).end();
 });
 
 // Disallow Robots
@@ -104,18 +104,14 @@ app.get('/json/summary-data.json', async (req, res) => {
 
 app.get('/json/summary-data-:lang.json', async (req, res) => {
   const { lang } = req.params;
-  if (!LABELS[lang]) {
-    res.status(404).send('');
-  }
-  res.json({ recs: SUMMARY_DATA, labels: LABELS[lang] });
+  if (lang && LABELS[lang]) res.json({ recs: SUMMARY_DATA, labels: LABELS[lang] });
+  else res.status(404).end();
 });
 
 app.get('/json/labels-:lang.json', async (req, res) => {
   const { lang } = req.params;
-  if (!LABELS[lang]) {
-    res.status(404).send('');
-  }
-  res.json({ labels: LABELS[lang] });
+  if (lang && LABELS[lang]) res.json({ labels: LABELS[lang] });
+  else res.status(404).end();
 });
 
 /**
@@ -177,16 +173,12 @@ app.post('/translate', async (req, res, next) => {
     next();
     return;
   }
-  // we'll be using updateTranslation() to resave the translated text
+  // we'll be using updateTranslation() to re-save the translated text
   if (typeof model.updateTranslation !== 'function') {
     next(new createError.MethodNotAllowed(`'${modelName}' doesn't support ${methodName}`));
     return;
   }
   let data = await model.find(id, fromLang);
-  // if (!data) {
-  //   next(new createError.MethodNotAllowed(`'${modelName}' doesn't support ${methodName}`));
-  //   return;
-  // }
   const fromText = (propertyType) ? data[propertyBaseName][propertyType] : data[propertyBaseName];
   const isString = (type === 'string') || (propertyType === 'string');
   let toText = '';
@@ -196,7 +188,7 @@ app.post('/translate', async (req, res, next) => {
     next(err);
     return;
   }
-  // save the translation
+  // re-save the translation
   try {
     // build submission using propertyName
     const submission = {};
@@ -396,15 +388,14 @@ app.post('/insert', async (req, res, next) => {
 
 // just 404 any unhandled routes
 app.use((req, res) => {
-  res.status(404).send('');
+  res.status(404).end();
 });
 
 // error handler (non 404s)
 app.use((err, req, res, next) => {
   debug('The app caught the following error:');
-  debug(err);
-  res.status(err.status || 500);
-  res.json({ error: err.message });
+  debug(err.status, err.message);
+  res.status(err.status || 500).send(err.message || 'Server Error');
 });
 
 module.exports = app;

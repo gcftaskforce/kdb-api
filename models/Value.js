@@ -79,7 +79,7 @@ class ValueModel extends Model {
       // submission may include a (formatted) string, in which case 'amount' must be parsed and validated
       if (typeof srcSubmission.string !== 'string') throw new createError.BadRequest('"string" must be of type string'); // available to client
       const amount = parseAmount(srcSubmission.string);
-      if (Number.isNaN(amount)) throw new createError.BadRequest(`unable to parse submitted "string" (${srcSubmission.string}) into a number`); // available to client
+      if (Number.isNaN(amount)) throw new createError.BadRequest(`The entry "${srcSubmission.string}" is not a valid number`); // available to client
       sanitizedSubmission.amount = amount;
     } else {
       // neither 'value' nor 'string' was supplied
