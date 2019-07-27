@@ -31,7 +31,6 @@ describe('json route for "region defs"', () => {
   });
 
   test('"summary-data" exists and is populated', () => {
-    // debug(collection);
     expect(collection).toHaveProperty('recs');
     expect(Array.isArray(collection.recs)).toBe(true);
     expect(collection.recs.length).not.toBe(0);
@@ -49,7 +48,6 @@ describe('json route for "summary-data" collection', () => {
   });
 
   test('"summary-data" exists and is populated', () => {
-    // debug(collection);
     expect(collection).toHaveProperty('recs');
     expect(Array.isArray(collection.recs)).toBe(true);
     expect(collection.recs.length).not.toBe(0);
@@ -67,7 +65,6 @@ describe('json route for "summary-data" collection including labels', () => {
   });
 
   test('"summary-data" exists and is populated', () => {
-    // debug(collection.labels);
     expect(collection).toHaveProperty('recs');
     expect(Array.isArray(collection.recs)).toBe(true);
     expect(collection.recs.length).not.toBe(0);
@@ -104,7 +101,6 @@ describe('json route for "data" collection', () => {
       .then(res => res.json())
       .then((jsonData) => {
         collection = jsonData;
-        debug(collection);
         return jsonData;
       });
   });
