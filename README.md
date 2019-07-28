@@ -42,9 +42,9 @@ The custom data types (Kinds) fulfilling the requirements of the KDB (and reflec
 
 Both the API and website components are multilingual. Specific label translations are maintained under ./etc.
 
-Text translations (text data) are discussed in the API Component README.
+Text translation features are discussed below.
 
-### Region Ids/Slugs
+### Region IDs/Slugs
 
 The KDB is principally a repository for data at both the nation and jurisdictional level. Collectively these are referred to as "regions". Identifiers are referenced in snake case with a dot-separator as follows (note the removal of combining diacritical marks to form strict ASCII string IDs). For example:
 
