@@ -75,17 +75,18 @@ describe('json route for "summary-data" collection including labels', () => {
   });
 });
 
-describe('json route for "labels" collection', () => {
+describe('json route for "summary-labels" collection', () => {
+  const ROUTE_NAME = 'summary-labels';
   const COLLECTION_NAME = 'labels';
   let collection;
 
   test('API returns JSON', () => {
-    return fetch(`${BASE_URI}/json/${COLLECTION_NAME}-${LANG}.json`)
+    return fetch(`${BASE_URI}/json/${ROUTE_NAME}-${LANG}.json`)
       .then(res => res.json())
       .then((jsonData) => { collection = jsonData; return jsonData; });
   });
 
-  test('"summary-data" exists and is populated', () => {
+  test('"summary-labels" exists and is populated', () => {
     expect(collection).toHaveProperty(COLLECTION_NAME);
     expect(Array.isArray(collection[COLLECTION_NAME])).toBe(true);
     expect(collection[COLLECTION_NAME].length).not.toBe(0);

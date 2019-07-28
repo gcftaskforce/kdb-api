@@ -132,7 +132,7 @@ app.get('/json/summary-data-:lang.json', async (req, res) => {
   res.send(`{"recs":${jsonStringRecs},"labels":${jsonStringLabels}}`);
 });
 
-app.get('/json/labels-:lang.json', async (req, res) => {
+app.get('/json/summary-labels-:lang.json', async (req, res) => {
   const { lang } = req.params;
   const jsonStringLabels = await getAsync(`summary-labels:${lang}`) || '[]'; // note default serialized empty array
   // Everything is already stringified in Redis
