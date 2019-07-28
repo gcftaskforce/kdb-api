@@ -148,11 +148,9 @@ Note that the [summary-data.js](summary-data.js) module includes a ``get()`` and
 
 ``save(summaryData)`` updates all derived values in the Datastore (currently ``Value`` types only).
 
-The API updates the variable ``SUMMARY_DATA`` upon startup so that this data will be available to the public route '/json/summary-data.json'.
+Upon startup the API updates the Redis strings `summary-data` and `summary-labels:{lang}` so that this data will be available to the public routes `/json/summary-data.json` and `/json/summary-labels-{lang}.json`.
 
-Additionally, changes to ``Value`` or ``Array`` types trigger a call to ``summaryData.get()`` and ``summaryData.save()`` both to update the variable ``SUMMARY_DATA`` and save the calculations to the Datastore. This is performed through the 'updateEntity' POST route.
-
-TODO: use Redis instead of the module-level variable ``SUMMARY_DATA``.
+Additionally, changes to ``Value`` or ``Array`` types trigger a call to ``summaryData.get()`` and ``summaryData.save()`` both to re-save the calculations to the Datastore and to update the Redis strings. This is performed through the 'updateEntity' POST route.
 
 ### Derived Entity Properties
 
@@ -227,8 +225,3 @@ The following illustrates a `timestamps` array for a `Partnership` kind.
 ```
 
 Note that for *Partnerships*, the capability to edit/translate individual properties was added later. Earlier, all properties were submitted in the same form, resulting in shared ISO 8601 *date and time* strings.
-
-### Basic Directory Structure
-
-
-### Routing
