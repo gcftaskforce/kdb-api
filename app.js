@@ -1,6 +1,7 @@
 'use strict';
 
 const debug = require('debug')('api:app');
+const { promisify } = require('util');
 const path = require('path');
 const createError = require('http-errors');
 const express = require('express');
@@ -15,15 +16,32 @@ const { copyPrimitives, getKindFromId } = require('./lib');
 const summaryData = require('./summary-data');
 const translation = require('./translation');
 
-let SUMMARY_DATA = [];
+const client = redis.createClient();
+
+// Promisify Redis client methods
+const getAsync = promisify(client.get).bind(client);
+const setAsync = promisify(client.set).bind(client);
+// const scanAsync = promisify(client.scan).bind(client);
+// const hscanAsync = promisify(client.hscan).bind(client);
+// const hmgetAsync = promisify(client.hmget).bind(client);
+
+// let SUMMARY_DATA = [];
 const MODELS_THAT_INVOKE_RECALCULATION = ['value', 'array']; /** summary data must be updated when any of these are updated  */
 
-const { LABELS } = summaryData;
+// const { LABELS } = summaryData;
 
-// keep a copy of current summary data
-// TODO: store this in REDIS!
-summaryData.get().then((data) => {
-  SUMMARY_DATA = data;
+// save "summary-data" to Redis JSON string for availability to corresponding routes
+summaryData.get().then((recs) => {
+  return setAsync('summary-data', JSON.stringify(recs));
+}).then(() => {
+  debug('Successfully initialized "summary-data"');
+}).catch((err) => {
+  debug('WARNING: Failed to initialize "summary-data"');
+  debug(err);
+});
+// save "summary-labels" to Redis JSON string for availability to corresponding routes
+Object.entries(summaryData.LABELS).forEach(async ([lang, obj]) => {
+  return setAsync(`summary-labels:${lang}`, JSON.stringify(obj));
 });
 
 const models = require('./models');
@@ -60,7 +78,7 @@ const SESSION_TTL = 12 * 3600;
 if (SESSION_NAME && SESSION_SECRET) {
   app.use(ExpressSession({
     store: new RedisStore({
-      client: redis.createClient(),
+      client,
       ttl: SESSION_TTL,
       logErrors: true,
     }),
@@ -99,19 +117,27 @@ app.get('/json/region-defs.json', async (req, res) => {
 });
 
 app.get('/json/summary-data.json', async (req, res) => {
-  res.json({ recs: SUMMARY_DATA });
+  const jsonStringRecs = await getAsync('summary-data');
+  // Everything is already stringified in Redis
+  res.set('Content-Type', 'application/json');
+  res.send(`{"recs":${jsonStringRecs}}`);
 });
 
 app.get('/json/summary-data-:lang.json', async (req, res) => {
   const { lang } = req.params;
-  if (lang && LABELS[lang]) res.json({ recs: SUMMARY_DATA, labels: LABELS[lang] });
-  else res.status(404).end();
+  const jsonStringLabels = await getAsync(`summary-labels:${lang}`) || '[]'; // note default serialized empty array
+  const jsonStringRecs = await getAsync('summary-data');
+  // Everything is already stringified in Redis
+  res.set('Content-Type', 'application/json');
+  res.send(`{"recs":${jsonStringRecs},"labels":${jsonStringLabels}}`);
 });
 
 app.get('/json/labels-:lang.json', async (req, res) => {
   const { lang } = req.params;
-  if (lang && LABELS[lang]) res.json({ labels: LABELS[lang] });
-  else res.status(404).end();
+  const jsonStringLabels = await getAsync(`summary-labels:${lang}`) || '[]'; // note default serialized empty array
+  // Everything is already stringified in Redis
+  res.set('Content-Type', 'application/json');
+  res.send(`{"labels":${jsonStringLabels}}`);
 });
 
 /**
@@ -274,8 +300,10 @@ app.post('/updateEntity', async (req, res, next) => {
     data = await model.updateEntity(submission, id, lang);
     // update derived values
     if (MODELS_THAT_INVOKE_RECALCULATION.includes(modelName)) {
-      SUMMARY_DATA = await summaryData.get();
-      await summaryData.save(SUMMARY_DATA);
+      const recs = await summaryData.get();
+      await summaryData.save(recs);
+      // re-save Redis JSON string
+      await setAsync('summary-data', JSON.stringify(recs));
     }
   } catch (err) {
     next(err);
