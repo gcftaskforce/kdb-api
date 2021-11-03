@@ -51,6 +51,6 @@
     "node-fetch": "2.6.0",
     "redis": "2.8.0",
     "uniqid": "5.0.3",
-    "validator": "11.1.0"
+    "validator": "13.7.0"
   }
 }
