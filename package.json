@@ -48,7 +48,7 @@
     "klaw-sync": "6.0.0",
     "lodash.get": "4.4.2",
     "lodash.has": "4.5.2",
-    "node-fetch": "2.6.0",
+    "node-fetch": "3.1.1",
     "redis": "2.8.0",
     "uniqid": "5.0.3",
     "validator": "11.1.0"
